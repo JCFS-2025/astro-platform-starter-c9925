@@ -32,7 +32,16 @@ Os arquivos `public/_headers` (cabeçalhos de segurança e cache) e `src/pages/4
 | Número do WhatsApp, e-mail, telefone, cidade | `src/data/site.ts` |
 | Clientes do carrossel (nomes e logotipos) | `src/data/clientes.ts` + imagens em `public/clientes/` |
 | Domínio do site | `astro.config.mjs` (`site`), `public/robots.txt` e `public/sitemap.xml` |
-| Textos das seções | `src/pages/index.astro` |
+| Textos das seções | `src/pages/index.astro` e `src/components/HeroCarousel.astro` (tela inicial) |
+
+## Logo
+
+Arquivos em `public/`:
+
+- `logo.svg` / `logo.png`: logo completo para fundo claro
+- `logo-branco.svg` / `logo-branco.png`: logo completo para fundo escuro
+- `logo-simbolo.svg`: só o símbolo (também usado como favicon)
+- `logo-icone.svg` / `logo-icone-512.png`: símbolo em ícone quadrado, para foto de perfil (WhatsApp, Instagram etc.)
 
 ## Estrutura
 

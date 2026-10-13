@@ -12,7 +12,7 @@ const solucoes = [
         icon: 'chat',
         produto: 'Axia Chat',
         titulo: 'Ferramenta de atendimento',
-        texto: 'Centralize WhatsApp e outros canais em uma única plataforma com CRM, automação e vários atendentes no mesmo número.',
+        texto: 'Centralize WhatsApp e outros canais em uma única plataforma com CRM, automação, vários atendentes no mesmo número e aplicativo mobile.',
         cor: 'from-brand-500 to-brand-700'
     },
     {
@@ -41,7 +41,7 @@ const chatRecursos = [
     { icon: 'send', titulo: 'Campanhas', texto: 'Envie comunicados e ofertas para listas segmentadas de contatos.' },
     { icon: 'tag', titulo: 'Etiquetas e organização', texto: 'Classifique conversas e contatos para encontrar tudo rapidamente.' },
     { icon: 'chart', titulo: 'Relatórios', texto: 'Tempo de resposta, volume por atendente e desempenho da equipe.' },
-    { icon: 'cloud', titulo: '100% na nuvem', texto: 'Acesse pelo navegador, de qualquer lugar, sem instalar servidores.' }
+    { icon: 'smartphone', titulo: 'Web e aplicativo mobile', texto: 'Atenda pelo navegador no computador ou pelo app no celular, sem instalar servidores.' }
 ] as const;
 
 const dnsRecursos = [
@@ -88,6 +88,10 @@ const diferenciais = [
 ] as const;
 
 const faq = [
+    {
+        p: 'O Axia Chat tem aplicativo para celular?',
+        r: 'Sim. Além do acesso pelo navegador no computador, o Axia Chat tem aplicativo mobile. Sua equipe recebe notificações de novas mensagens, responde clientes e acompanha os atendimentos de qualquer lugar.'
+    },
     {
         p: 'Posso usar o mesmo número de WhatsApp com vários atendentes?',
         r: 'Sim. Com o Axia Chat, toda a equipe atende pelo mesmo número, com distribuição de conversas por setor, histórico centralizado e controle de quem está atendendo cada cliente.'
@@ -185,7 +189,8 @@ const faq = [
                                 'Fim dos celulares espalhados e conversas perdidas',
                                 'Atendimento 24h com chatbot e respostas automáticas',
                                 'Gestão da equipe com indicadores de desempenho',
-                                'Histórico completo de cada cliente, sempre acessível'
+                                'Histórico completo de cada cliente, sempre acessível',
+                                'Aplicativo mobile para atender de qualquer lugar'
                             ].map((t) => (
                                 <li class="flex gap-3">
                                     <span class="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-whatsapp/15 text-whatsapp-dark">
@@ -220,6 +225,102 @@ const faq = [
                             </div>
                         ))
                     }
+                </div>
+            </div>
+
+            <!-- Aplicativo mobile -->
+            <div class="reveal mt-20 grid items-center gap-12 overflow-hidden rounded-3xl bg-gradient-to-br from-brand-50 via-white to-emerald-50 p-8 ring-1 ring-slate-200 sm:p-12 lg:grid-cols-[1.1fr_1fr]">
+                <div>
+                    <span class="eyebrow"><Icon name="smartphone" class="size-4" /> Aplicativo mobile</span>
+                    <h3 class="mt-4 text-2xl font-bold sm:text-3xl">O Axia Chat também no seu celular</h3>
+                    <p class="mt-4 text-lg text-slate-600">
+                        Com o aplicativo mobile do Axia Chat, sua equipe continua atendendo fora do escritório: em visitas, no home office ou em
+                        trânsito. Nenhum cliente fica esperando.
+                    </p>
+                    <ul class="mt-6 grid gap-4 sm:grid-cols-2">
+                        {
+                            [
+                                { icon: 'bell', t: 'Notificações de novas mensagens' },
+                                { icon: 'chat', t: 'Responda e transfira conversas' },
+                                { icon: 'users', t: 'Acompanhe a fila da equipe' },
+                                { icon: 'cloud', t: 'Sincronizado com o computador' }
+                            ].map((i) => (
+                                <li class="flex items-center gap-3 font-medium text-navy-900">
+                                    <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-white text-brand-600 shadow-sm ring-1 ring-slate-200">
+                                        <Icon name={i.icon as any} class="size-5" />
+                                    </span>
+                                    {i.t}
+                                </li>
+                            ))
+                        }
+                    </ul>
+                    <a
+                        href={linkWhatsApp('Olá! Quero saber mais sobre o aplicativo mobile do Axia Chat.')}
+                        target="_blank"
+                        rel="noopener"
+                        class="btn-whatsapp mt-8"
+                    >
+                        <WhatsAppIcon class="size-5" /> Quero o Axia Chat no celular
+                    </a>
+                </div>
+
+                <!-- Ilustração do aplicativo -->
+                <div class="relative mx-auto mt-10 w-full max-w-[17rem] lg:mt-12" aria-hidden="true">
+                    <div class="absolute -top-14 -left-6 z-10 flex items-center gap-3 rounded-2xl bg-white p-3 pr-4 shadow-xl ring-1 ring-slate-200 sm:-left-16">
+                        <span class="inline-flex size-9 items-center justify-center rounded-full bg-whatsapp text-white"><WhatsAppIcon class="size-5" /></span>
+                        <div class="text-xs">
+                            <p class="font-semibold text-navy-900">Nova mensagem</p>
+                            <p class="text-slate-500">Mariana: Vocês entregam hoje?</p>
+                        </div>
+                    </div>
+                    <div class="rounded-[2.6rem] bg-navy-900 p-2.5 shadow-2xl">
+                        <div class="overflow-hidden rounded-[2.1rem] bg-white">
+                            <div class="flex justify-center bg-navy-900 pt-2 pb-3"><span class="h-1.5 w-16 rounded-full bg-white/20"></span></div>
+                            <div class="bg-navy-900 px-4 pb-4 text-white">
+                                <p class="text-sm font-semibold">Axia Chat</p>
+                                <div class="mt-3 flex gap-2 text-[0.7rem]">
+                                    <span class="rounded-full bg-white px-2.5 py-1 font-semibold text-navy-900">Abertos 12</span>
+                                    <span class="rounded-full bg-white/10 px-2.5 py-1">Aguardando 3</span>
+                                </div>
+                            </div>
+                            <ul class="divide-y divide-slate-100">
+                                {
+                                    [
+                                        { n: 'Mariana Costa', m: 'Vocês entregam hoje?', h: 'agora', u: 2, c: 'bg-pink-100 text-pink-700' },
+                                        { n: 'Pedro Alves', m: 'Perfeito, obrigado!', h: '09:42', u: 0, c: 'bg-amber-100 text-amber-700' },
+                                        { n: 'Loja Centro', m: 'Pode enviar o orçamento?', h: '09:15', u: 1, c: 'bg-brand-100 text-brand-700' },
+                                        { n: 'Juliana Reis', m: 'Combinado para amanhã', h: 'ontem', u: 0, c: 'bg-emerald-100 text-emerald-700' },
+                                        { n: 'Carlos Lima', m: 'Qual o horário de vocês?', h: 'ontem', u: 0, c: 'bg-violet-100 text-violet-700' }
+                                    ].map((c) => (
+                                        <li class="flex items-center gap-3 px-4 py-3">
+                                            <span class={`inline-flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-bold ${c.c}`}>
+                                                {c.n.split(' ').map((p) => p[0]).join('')}
+                                            </span>
+                                            <span class="min-w-0 grow">
+                                                <span class="flex justify-between gap-2">
+                                                    <span class="truncate text-[0.8rem] font-semibold text-navy-900">{c.n}</span>
+                                                    <span class={`shrink-0 text-[0.65rem] ${c.u ? 'text-whatsapp-dark' : 'text-slate-400'}`}>{c.h}</span>
+                                                </span>
+                                                <span class="flex justify-between gap-2">
+                                                    <span class="truncate text-xs text-slate-500">{c.m}</span>
+                                                    {c.u > 0 && (
+                                                        <span class="inline-flex size-4 shrink-0 items-center justify-center rounded-full bg-whatsapp text-[0.6rem] font-bold text-white">
+                                                            {c.u}
+                                                        </span>
+                                                    )}
+                                                </span>
+                                            </span>
+                                        </li>
+                                    ))
+                                }
+                            </ul>
+                            <div class="flex justify-around border-t border-slate-100 py-3 text-slate-400">
+                                <Icon name="chat" class="size-5 text-brand-600" />
+                                <Icon name="users" class="size-5" />
+                                <Icon name="bell" class="size-5" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
