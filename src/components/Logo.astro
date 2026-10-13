@@ -9,7 +9,13 @@ interface Props {
     class?: string;
 }
 const { variant = 'dark', class: className = 'h-10 w-auto' } = Astro.props;
-const svg = (variant === 'light' ? logoBranco : logoEscuro).replace('<svg ', `<svg class="${className}" `);
+// Cada cópia do logo na página recebe IDs próprios: se um degradê com o mesmo ID estiver
+// num elemento escondido (ex.: logo do cabeçalho ao rolar), as outras cópias perdem a cor.
+const sufixo = Math.random().toString(36).slice(2, 8);
+const svg = (variant === 'light' ? logoBranco : logoEscuro)
+    .replace(/id="([^"]+)"/g, `id="$1-${sufixo}"`)
+    .replace(/url\(#([^)]+)\)/g, `url(#$1-${sufixo})`)
+    .replace('<svg ', `<svg class="${className}" `);
 ---
 
 <Fragment set:html={svg} />

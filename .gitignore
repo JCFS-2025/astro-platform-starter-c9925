@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # Cloudflare Wrangler
 .wrangler
+
+# Variáveis locais do Cloudflare
+.dev.vars

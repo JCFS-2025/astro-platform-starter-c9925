@@ -1,0 +1,8 @@
+# Usado só em desenvolvimento (npm run dev) para simular o Cloudflare localmente.
+# Em produção, o KV e as variáveis são configurados no painel do Cloudflare Pages (veja o README).
+name = "axia-solucoes"
+compatibility_date = "2025-01-01"
+
+[[kv_namespaces]]
+binding = "AXIA_KV"
+id = "local"

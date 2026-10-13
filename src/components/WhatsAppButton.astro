@@ -1,7 +1,10 @@
 ---
 import WhatsAppIcon from './WhatsAppIcon.astro';
 import Icon from './Icon.astro';
-import { linkWhatsApp } from '../data/site';
+import { linkWhatsApp as montarLink } from '../lib/settings';
+
+const config = Astro.locals.settings;
+const linkWhatsApp = (mensagem?: string) => montarLink(config, mensagem);
 ---
 
 <div class="fixed right-4 bottom-4 z-50 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
@@ -9,6 +12,7 @@ import { linkWhatsApp } from '../data/site';
         class="relative hidden max-w-[16rem] rounded-2xl rounded-br-sm bg-white p-4 pr-9 text-sm text-slate-700 shadow-2xl ring-1 ring-slate-200"
         role="status"
         data-wa-bubble
+        data-atraso={config.balaoAtivo ? config.balaoAtraso : -1}
     >
         <button
             type="button"
@@ -18,8 +22,8 @@ import { linkWhatsApp } from '../data/site';
         >
             <Icon name="close" class="size-4" />
         </button>
-        <p class="font-semibold text-navy-900">Olá! 👋</p>
-        <p class="mt-1">Precisa de atendimento, DNS ou certificado digital? Fale com a Axia pelo WhatsApp.</p>
+        <p class="font-semibold text-navy-900">{config.balaoTitulo}</p>
+        <p class="mt-1">{config.balaoTexto}</p>
     </div>
 
     <a
@@ -43,8 +47,9 @@ import { linkWhatsApp } from '../data/site';
         fechado = sessionStorage.getItem(CHAVE) === '1';
     } catch {}
 
-    if (!fechado) {
-        setTimeout(() => bubble.classList.remove('hidden'), 4000);
+    const atraso = Number(bubble.dataset.atraso);
+    if (!fechado && atraso >= 0) {
+        setTimeout(() => bubble.classList.remove('hidden'), atraso * 1000);
     }
 
     fechar.addEventListener('click', () => {

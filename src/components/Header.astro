@@ -2,7 +2,10 @@
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import WhatsAppIcon from './WhatsAppIcon.astro';
-import { linkWhatsApp } from '../data/site';
+import { linkWhatsApp as montarLink } from '../lib/settings';
+
+const config = Astro.locals.settings;
+const linkWhatsApp = (mensagem?: string) => montarLink(config, mensagem);
 
 const links = [
     { href: '/#solucoes', label: 'Produtos' },

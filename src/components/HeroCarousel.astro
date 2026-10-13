@@ -2,7 +2,10 @@
 // Tela inicial em carrossel: um slide para cada produto (Axia Chat, Axia DNS e Axia ID).
 import Icon from './Icon.astro';
 import WhatsAppIcon from './WhatsAppIcon.astro';
-import { linkWhatsApp } from '../data/site';
+import { linkWhatsApp as montarLink } from '../lib/settings';
+
+const config = Astro.locals.settings;
+const linkWhatsApp = (mensagem?: string) => montarLink(config, mensagem);
 
 const slides = [
     {
@@ -57,7 +60,7 @@ const dnsLog = [
 ];
 ---
 
-<section class="hero relative overflow-hidden bg-navy-900 pt-24 pb-24 text-white sm:pt-28 lg:pt-36 lg:pb-10" data-hero data-slide="chat" aria-roledescription="carrossel" aria-label="Produtos Axia">
+<section class="hero relative overflow-hidden bg-navy-900 pt-24 pb-24 text-white sm:pt-28 lg:pt-36 lg:pb-10" data-hero data-slide="chat" data-segundos={config.heroSegundos} aria-roledescription="carrossel" aria-label="Produtos Axia">
     <h1 class="sr-only">Axia Soluções: Axia Chat, Axia DNS e Axia ID</h1>
 
     <div class="pointer-events-none absolute inset-0" aria-hidden="true">
@@ -434,8 +437,8 @@ const dnsLog = [
 </style>
 
 <script>
-    const DURACAO = 7000;
     const hero = document.querySelector<HTMLElement>('[data-hero]')!;
+    const DURACAO = (Number(hero.dataset.segundos) || 7) * 1000;
     const slides = [...hero.querySelectorAll<HTMLElement>('.hero-slide')];
     const tabs = [...hero.querySelectorAll<HTMLButtonElement>('[data-tab]')];
     const pauseBtn = hero.querySelector<HTMLButtonElement>('[data-pause]')!;

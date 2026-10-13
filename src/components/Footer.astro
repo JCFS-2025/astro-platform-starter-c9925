@@ -1,8 +1,16 @@
 ---
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import { site, linkWhatsApp } from '../data/site';
+import { linkWhatsApp } from '../lib/settings';
+
+const config = Astro.locals.settings;
 const ano = new Date().getFullYear();
+const redes = [
+    { nome: 'Instagram', url: config.instagram, icon: 'instagram' },
+    { nome: 'Facebook', url: config.facebook, icon: 'facebook' },
+    { nome: 'LinkedIn', url: config.linkedin, icon: 'linkedin' },
+    { nome: 'YouTube', url: config.youtube, icon: 'youtube' }
+] as const;
 ---
 
 <footer class="bg-navy-950 text-slate-400">
@@ -13,10 +21,31 @@ const ano = new Date().getFullYear();
                 Soluções em atendimento digital, segurança de internet e certificação digital para empresas e profissionais. Consultoria,
                 implantação e suporte próximos, do primeiro contato ao pós-venda.
             </p>
+            {
+                redes.some((r) => r.url) && (
+                    <ul class="mt-6 flex gap-3">
+                        {redes
+                            .filter((r) => r.url)
+                            .map((r) => (
+                                <li>
+                                    <a
+                                        href={r.url}
+                                        target="_blank"
+                                        rel="noopener"
+                                        aria-label={r.nome}
+                                        class="inline-flex size-10 items-center justify-center rounded-full bg-white/5 text-slate-300 transition hover:bg-white/15 hover:text-white"
+                                    >
+                                        <Icon name={r.icon} class="size-5" />
+                                    </a>
+                                </li>
+                            ))}
+                    </ul>
+                )
+            }
         </div>
 
         <div>
-            <h2 class="text-sm font-semibold tracking-wider text-white uppercase">Soluções</h2>
+            <h2 class="text-sm font-semibold tracking-wider text-white uppercase">Produtos</h2>
             <ul class="mt-4 space-y-2 text-sm">
                 <li><a href="/#chat" class="hover:text-white">Axia Chat — Atendimento multicanal</a></li>
                 <li><a href="/#dns" class="hover:text-white">Axia DNS — Filtro e segurança</a></li>
@@ -27,25 +56,48 @@ const ano = new Date().getFullYear();
         <div>
             <h2 class="text-sm font-semibold tracking-wider text-white uppercase">Contato</h2>
             <ul class="mt-4 space-y-3 text-sm">
-                <li>
-                    <a href={linkWhatsApp()} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-white">
-                        <Icon name="phone" class="size-4" />
-                        {site.telefoneExibicao}
-                    </a>
-                </li>
-                <li>
-                    <a href={`mailto:${site.email}`} class="inline-flex items-center gap-2 hover:text-white">
-                        <Icon name="mail" class="size-4" />
-                        {site.email}
-                    </a>
-                </li>
-                <li class="inline-flex items-center gap-2"><Icon name="pin" class="size-4" />{site.cidade}</li>
+                {
+                    config.telefoneExibicao && (
+                        <li>
+                            <a href={linkWhatsApp(config)} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-white">
+                                <Icon name="phone" class="size-4" />
+                                {config.telefoneExibicao}
+                            </a>
+                        </li>
+                    )
+                }
+                {
+                    config.email && (
+                        <li>
+                            <a href={`mailto:${config.email}`} class="inline-flex items-center gap-2 break-all hover:text-white">
+                                <Icon name="mail" class="size-4 shrink-0" />
+                                {config.email}
+                            </a>
+                        </li>
+                    )
+                }
+                {
+                    config.horario && (
+                        <li class="flex items-center gap-2">
+                            <Icon name="clock" class="size-4 shrink-0" />
+                            {config.horario}
+                        </li>
+                    )
+                }
+                {
+                    config.cidade && (
+                        <li class="flex items-center gap-2">
+                            <Icon name="pin" class="size-4 shrink-0" />
+                            {config.cidade}
+                        </li>
+                    )
+                }
             </ul>
         </div>
     </div>
     <div class="border-t border-white/10">
         <div class="container-site flex flex-col gap-2 py-6 text-xs sm:flex-row sm:items-center sm:justify-between">
-            <p>© {ano} {site.nome}. Todos os direitos reservados.</p>
+            <p>© {ano} Axia Soluções. Todos os direitos reservados.{config.cnpj && ` CNPJ ${config.cnpj}`}</p>
             <p>Axia Chat · Axia DNS · Axia ID</p>
         </div>
     </div>

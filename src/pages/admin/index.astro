@@ -1,0 +1,395 @@
+---
+// Painel gerenciador do site: /admin
+export const prerender = false;
+
+import '../../styles/globals.css';
+import '@fontsource-variable/inter/wght.css';
+import Logo from '../../components/Logo.astro';
+import Icon from '../../components/Icon.astro';
+import WhatsAppIcon from '../../components/WhatsAppIcon.astro';
+import { MAX_CLIENTES } from '../../lib/settings';
+
+const env = Astro.locals.runtime?.env ?? ({} as Env);
+const configurado = Boolean(env.ADMIN_PASSWORD);
+const temKV = Boolean(env.AXIA_KV);
+const logado = Astro.locals.admin;
+const erro = Astro.url.searchParams.get('erro');
+const config = Astro.locals.settings;
+const dadosJson = JSON.stringify(config).replace(/</g, '\\u003c');
+
+const secoes = [
+    { id: 'contato', titulo: 'Contato', icon: 'phone' },
+    { id: 'redes', titulo: 'Redes sociais', icon: 'instagram' },
+    { id: 'balao', titulo: 'Balão do WhatsApp', icon: 'chat' },
+    { id: 'inicio', titulo: 'Tela inicial', icon: 'layers' },
+    { id: 'clientes', titulo: 'Clientes', icon: 'users' },
+    { id: 'seo', titulo: 'Google e redes', icon: 'globe' }
+] as const;
+
+const campo = 'mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-navy-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20';
+const rotulo = 'block text-sm font-medium text-navy-900';
+const ajuda = 'mt-1 text-xs text-slate-500';
+---
+
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Painel | Axia Soluções</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    </head>
+    <body class="min-h-screen bg-slate-100 antialiased">
+        {
+            !logado ? (
+                <main class="flex min-h-screen items-center justify-center px-4 py-12">
+                    <div class="w-full max-w-sm">
+                        <div class="mb-8 flex justify-center">
+                            <Logo variant="dark" class="h-12 w-auto" />
+                        </div>
+                        <div class="rounded-3xl bg-white p-8 shadow-xl ring-1 ring-slate-200">
+                            <h1 class="text-xl font-bold">Painel do site</h1>
+                            {configurado ? (
+                                <>
+                                    <p class="mt-1 text-sm text-slate-500">Digite a senha de administrador para continuar.</p>
+                                    {erro === 'senha' && (
+                                        <p class="mt-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">
+                                            Senha incorreta. Tente novamente.
+                                        </p>
+                                    )}
+                                    <form method="post" action="/api/admin/login" class="mt-6">
+                                        <label for="senha" class={rotulo}>
+                                            Senha
+                                        </label>
+                                        <input id="senha" name="senha" type="password" required autocomplete="current-password" autofocus class={campo} />
+                                        <button type="submit" class="btn-primary mt-6 w-full">
+                                            Entrar
+                                        </button>
+                                    </form>
+                                </>
+                            ) : (
+                                <div class="mt-4 space-y-3 text-sm text-slate-600">
+                                    <p class="rounded-xl bg-amber-50 px-4 py-3 text-amber-800">O painel ainda não tem uma senha configurada.</p>
+                                    <p>
+                                        No Cloudflare, abra o projeto em <strong>Workers & Pages → Settings → Variables and Secrets</strong> e crie a
+                                        variável <code class="rounded bg-slate-100 px-1">ADMIN_PASSWORD</code> com a senha desejada. Depois, faça um novo
+                                        deploy.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                        <p class="mt-6 text-center text-sm">
+                            <a href="/" class="text-slate-500 hover:text-brand-600">
+                                ← Voltar para o site
+                            </a>
+                        </p>
+                    </div>
+                </main>
+            ) : (
+                <>
+                    <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+                        <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+                            <div class="flex items-center gap-3">
+                                <Logo variant="dark" class="h-9 w-auto" />
+                                <span class="hidden rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 sm:inline">Painel</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <a href="/" target="_blank" rel="noopener" class="btn-outline-dark !px-4 !py-2 text-sm">
+                                    <Icon name="external" class="size-4" /> <span class="hidden sm:inline">Ver site</span>
+                                </a>
+                                <form method="post" action="/api/admin/logout">
+                                    <button type="submit" class="btn !px-4 !py-2 text-sm text-slate-600 hover:bg-slate-100" aria-label="Sair">
+                                        <Icon name="logout" class="size-4" /> <span class="hidden sm:inline">Sair</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="mx-auto grid max-w-6xl gap-8 px-4 pt-8 pb-32 sm:px-6 lg:grid-cols-[13rem_1fr]">
+                        <nav class="hidden lg:block" aria-label="Seções do painel">
+                            <ul class="sticky top-24 space-y-1">
+                                {secoes.map((s) => (
+                                    <li>
+                                        <a
+                                            href={`#${s.id}`}
+                                            class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-white hover:text-navy-900"
+                                        >
+                                            <Icon name={s.icon} class="size-4" />
+                                            {s.titulo}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
+
+                        <form id="painel" class="min-w-0 space-y-6" novalidate>
+                            <div>
+                                <h1 class="text-2xl font-bold">Configurações do site</h1>
+                                <p class="mt-1 text-slate-500">As alterações aparecem no site em até 1 minuto depois de salvar.</p>
+                            </div>
+
+                            {!temKV && (
+                                <p class="rounded-2xl bg-amber-50 px-5 py-4 text-sm text-amber-800 ring-1 ring-amber-200" role="alert">
+                                    O armazenamento <strong>AXIA_KV</strong> não está ligado a este projeto no Cloudflare, então as alterações não podem ser
+                                    salvas. Veja o passo a passo no README do projeto.
+                                </p>
+                            )}
+
+                            <!-- Contato -->
+                            <section id="contato" class="scroll-mt-24 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
+                                <h2 class="flex items-center gap-2 text-lg font-bold">
+                                    <Icon name="phone" class="size-5 text-brand-600" /> Contato
+                                </h2>
+                                <p class="mt-1 text-sm text-slate-500">Usado nos botões de WhatsApp, no rodapé e no formulário de contato.</p>
+                                <div class="mt-6 grid gap-5 sm:grid-cols-2">
+                                    <div>
+                                        <label for="f-whatsapp" class={rotulo}>
+                                            Número do WhatsApp
+                                        </label>
+                                        <input id="f-whatsapp" name="whatsapp" inputmode="numeric" placeholder="5511999999999" class={campo} />
+                                        <p class={ajuda}>
+                                            Só números: 55 + DDD + número. <a id="testar-whatsapp" href="#" target="_blank" rel="noopener" class="font-medium text-brand-600 hover:underline">Testar link</a>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <label for="f-telefoneExibicao" class={rotulo}>
+                                            Telefone exibido no rodapé
+                                        </label>
+                                        <input id="f-telefoneExibicao" name="telefoneExibicao" placeholder="(11) 99999-9999" class={campo} />
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label for="f-whatsappMensagem" class={rotulo}>
+                                            Mensagem inicial do WhatsApp
+                                        </label>
+                                        <input id="f-whatsappMensagem" name="whatsappMensagem" maxlength="300" class={campo} />
+                                        <p class={ajuda}>Texto que já aparece escrito quando o visitante clica no balão ou em "Fale conosco".</p>
+                                    </div>
+                                    <div>
+                                        <label for="f-email" class={rotulo}>
+                                            E-mail
+                                        </label>
+                                        <input id="f-email" name="email" type="email" placeholder="contato@empresa.com.br" class={campo} />
+                                    </div>
+                                    <div>
+                                        <label for="f-horario" class={rotulo}>
+                                            Horário de atendimento
+                                        </label>
+                                        <input id="f-horario" name="horario" placeholder="Segunda a sexta, das 8h às 18h" class={campo} />
+                                    </div>
+                                    <div>
+                                        <label for="f-cidade" class={rotulo}>
+                                            Cidade ou endereço
+                                        </label>
+                                        <input id="f-cidade" name="cidade" placeholder="São Paulo - SP" class={campo} />
+                                    </div>
+                                    <div>
+                                        <label for="f-cnpj" class={rotulo}>
+                                            CNPJ <span class="font-normal text-slate-400">(opcional)</span>
+                                        </label>
+                                        <input id="f-cnpj" name="cnpj" placeholder="00.000.000/0001-00" class={campo} />
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Redes sociais -->
+                            <section id="redes" class="scroll-mt-24 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
+                                <h2 class="flex items-center gap-2 text-lg font-bold">
+                                    <Icon name="instagram" class="size-5 text-brand-600" /> Redes sociais
+                                </h2>
+                                <p class="mt-1 text-sm text-slate-500">Cole o endereço completo. As redes em branco não aparecem no site.</p>
+                                <div class="mt-6 grid gap-5 sm:grid-cols-2">
+                                    {(
+                                        [
+                                            ['instagram', 'Instagram', 'https://instagram.com/axiasolucoes'],
+                                            ['facebook', 'Facebook', 'https://facebook.com/axiasolucoes'],
+                                            ['linkedin', 'LinkedIn', 'https://linkedin.com/company/axiasolucoes'],
+                                            ['youtube', 'YouTube', 'https://youtube.com/@axiasolucoes']
+                                        ] as const
+                                    ).map(([nome, titulo, exemplo]) => (
+                                        <div>
+                                            <label for={`f-${nome}`} class={rotulo}>
+                                                {titulo}
+                                            </label>
+                                            <input id={`f-${nome}`} name={nome} type="url" placeholder={exemplo} class={campo} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+
+                            <!-- Balão -->
+                            <section id="balao" class="scroll-mt-24 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
+                                <h2 class="flex items-center gap-2 text-lg font-bold">
+                                    <Icon name="chat" class="size-5 text-brand-600" /> Balão do WhatsApp
+                                </h2>
+                                <p class="mt-1 text-sm text-slate-500">Mensagem que aparece ao lado do botão verde do WhatsApp, no canto da tela.</p>
+                                <div class="mt-6 grid gap-6 md:grid-cols-[1fr_16rem]">
+                                    <div class="space-y-5">
+                                        <label class="flex cursor-pointer items-center gap-3">
+                                            <input id="f-balaoAtivo" name="balaoAtivo" type="checkbox" class="peer sr-only" />
+                                            <span class="relative h-6 w-11 shrink-0 rounded-full bg-slate-300 transition peer-checked:bg-brand-500 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/40 after:absolute after:top-0.5 after:left-0.5 after:size-5 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-5" />
+                                            <span class="text-sm font-medium text-navy-900">Mostrar o balão de mensagem</span>
+                                        </label>
+                                        <div>
+                                            <label for="f-balaoTitulo" class={rotulo}>
+                                                Título
+                                            </label>
+                                            <input id="f-balaoTitulo" name="balaoTitulo" maxlength="60" class={campo} />
+                                        </div>
+                                        <div>
+                                            <label for="f-balaoTexto" class={rotulo}>
+                                                Texto
+                                            </label>
+                                            <textarea id="f-balaoTexto" name="balaoTexto" rows="2" maxlength="200" class={campo} />
+                                        </div>
+                                        <div class="max-w-48">
+                                            <label for="f-balaoAtraso" class={rotulo}>
+                                                Aparecer depois de
+                                            </label>
+                                            <div class="relative">
+                                                <input id="f-balaoAtraso" name="balaoAtraso" type="number" min="0" max="60" class={`${campo} pr-20`} />
+                                                <span class="pointer-events-none absolute top-1/2 right-4 mt-0.5 -translate-y-1/2 text-sm text-slate-400">segundos</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-end justify-end gap-3 rounded-2xl bg-slate-100 p-4" aria-label="Prévia do balão">
+                                        <div id="previa-balao" class="rounded-2xl rounded-br-sm bg-white p-4 text-sm text-slate-700 shadow-lg ring-1 ring-slate-200">
+                                            <p class="font-semibold text-navy-900" data-previa="balaoTitulo" />
+                                            <p class="mt-1" data-previa="balaoTexto" />
+                                        </div>
+                                        <span class="inline-flex size-12 items-center justify-center rounded-full bg-whatsapp text-white shadow-lg">
+                                            <WhatsAppIcon class="size-7" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Tela inicial -->
+                            <section id="inicio" class="scroll-mt-24 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
+                                <h2 class="flex items-center gap-2 text-lg font-bold">
+                                    <Icon name="layers" class="size-5 text-brand-600" /> Tela inicial
+                                </h2>
+                                <p class="mt-1 text-sm text-slate-500">O carrossel com Axia Chat, Axia DNS e Axia ID no topo do site.</p>
+                                <div class="mt-6 max-w-56">
+                                    <label for="f-heroSegundos" class={rotulo}>
+                                        Tempo de cada slide
+                                    </label>
+                                    <div class="relative">
+                                        <input id="f-heroSegundos" name="heroSegundos" type="number" min="3" max="30" class={`${campo} pr-20`} />
+                                        <span class="pointer-events-none absolute top-1/2 right-4 mt-0.5 -translate-y-1/2 text-sm text-slate-400">segundos</span>
+                                    </div>
+                                    <p class={ajuda}>Entre 3 e 30 segundos.</p>
+                                </div>
+                            </section>
+
+                            <!-- Clientes -->
+                            <section id="clientes" class="scroll-mt-24 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
+                                <div class="flex flex-wrap items-start justify-between gap-3">
+                                    <div>
+                                        <h2 class="flex items-center gap-2 text-lg font-bold">
+                                            <Icon name="users" class="size-5 text-brand-600" /> Clientes do carrossel
+                                        </h2>
+                                        <p class="mt-1 text-sm text-slate-500">
+                                            Aparecem na seção do Axia Chat. Com logotipo, mostra a imagem; sem logotipo, mostra o nome.
+                                        </p>
+                                    </div>
+                                    <span id="contador-clientes" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 tabular-nums" />
+                                </div>
+                                <div class="mt-6">
+                                    <label for="f-clientesTitulo" class={rotulo}>
+                                        Título acima do carrossel
+                                    </label>
+                                    <input id="f-clientesTitulo" name="clientesTitulo" maxlength="100" class={campo} />
+                                </div>
+                                <ul id="lista-clientes" class="mt-6 space-y-3" />
+                                <p id="sem-clientes" class="hidden rounded-2xl border border-dashed border-slate-300 px-4 py-8 text-center text-sm text-slate-500">
+                                    Nenhum cliente cadastrado. O carrossel fica escondido até você adicionar o primeiro.
+                                </p>
+                                <button type="button" id="adicionar-cliente" class="btn-outline-dark mt-4 !py-2.5 text-sm">
+                                    <Icon name="plus" class="size-4" /> Adicionar cliente
+                                </button>
+                            </section>
+
+                            <!-- SEO -->
+                            <section id="seo" class="scroll-mt-24 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
+                                <h2 class="flex items-center gap-2 text-lg font-bold">
+                                    <Icon name="globe" class="size-5 text-brand-600" /> Google e redes
+                                </h2>
+                                <p class="mt-1 text-sm text-slate-500">Como o site aparece nas buscas do Google e quando o link é compartilhado.</p>
+                                <div class="mt-6 space-y-5">
+                                    <div>
+                                        <label for="f-seoTitulo" class={rotulo}>
+                                            Título da página <span class="font-normal text-slate-400" data-contador="seoTitulo" />
+                                        </label>
+                                        <input id="f-seoTitulo" name="seoTitulo" maxlength="90" class={campo} />
+                                    </div>
+                                    <div>
+                                        <label for="f-seoDescricao" class={rotulo}>
+                                            Descrição <span class="font-normal text-slate-400" data-contador="seoDescricao" />
+                                        </label>
+                                        <textarea id="f-seoDescricao" name="seoDescricao" rows="3" maxlength="300" class={campo} />
+                                    </div>
+                                    <div class="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200" aria-label="Prévia no Google">
+                                        <p class="text-xs text-slate-500">axiasolucoes.com.br</p>
+                                        <p class="mt-1 truncate text-lg text-[#1a0dab]" data-previa="seoTitulo" />
+                                        <p class="line-clamp-2 text-sm text-slate-600" data-previa="seoDescricao" />
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+
+                    <!-- Barra de salvar -->
+                    <div class="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
+                        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+                            <p id="status" class="flex items-center gap-2 text-sm text-slate-500" role="status" aria-live="polite">
+                                Tudo salvo
+                            </p>
+                            <button type="submit" form="painel" id="salvar" class="btn-primary" disabled={!temKV}>
+                                Salvar alterações
+                            </button>
+                        </div>
+                    </div>
+
+                    <template id="modelo-cliente">
+                        <li class="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 p-3 sm:flex-nowrap">
+                            <div class="flex items-center gap-2">
+                                <span class="logo-caixa flex h-14 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 text-slate-300">
+                                    <img class="logo-img hidden max-h-12 max-w-20 object-contain" alt="" />
+                                    <Icon name="image" class="logo-vazio size-6" />
+                                </span>
+                                <div class="flex flex-col gap-1">
+                                    <label class="btn cursor-pointer !px-2.5 !py-1 text-xs text-brand-700 hover:bg-brand-50">
+                                        <Icon name="upload" class="size-3.5" /> <span class="logo-acao">Logo</span>
+                                        <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="logo-arquivo sr-only" />
+                                    </label>
+                                    <button type="button" class="logo-remover btn hidden !px-2.5 !py-1 text-xs text-slate-500 hover:bg-slate-100">Remover</button>
+                                </div>
+                            </div>
+                            <div class="grid min-w-0 grow gap-2 sm:grid-cols-2">
+                                <input class="cliente-nome w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-500" placeholder="Nome do cliente" maxlength="80" aria-label="Nome do cliente" />
+                                <input class="cliente-segmento w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-500" placeholder="Segmento (opcional)" maxlength="60" aria-label="Segmento" />
+                            </div>
+                            <div class="ml-auto flex items-center gap-1">
+                                <button type="button" class="mover-cima inline-flex size-9 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30" aria-label="Mover para cima"><Icon name="up" class="size-4" /></button>
+                                <button type="button" class="mover-baixo inline-flex size-9 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30" aria-label="Mover para baixo"><Icon name="down" class="size-4" /></button>
+                                <button type="button" class="excluir inline-flex size-9 items-center justify-center rounded-lg text-rose-500 hover:bg-rose-50" aria-label="Excluir cliente"><Icon name="trash" class="size-4" /></button>
+                            </div>
+                        </li>
+                    </template>
+
+                    <script id="dados" type="application/json" set:html={dadosJson} />
+                    <script is:inline define:vars={{ MAX_CLIENTES }}>
+                        window.__MAX_CLIENTES = MAX_CLIENTES;
+                    </script>
+                </>
+            )
+        }
+
+        <script>
+            import { iniciarPainel } from '../../lib/painel';
+            if (document.getElementById('painel')) iniciarPainel();
+        </script>
+    </body>
+</html>

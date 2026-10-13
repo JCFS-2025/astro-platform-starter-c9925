@@ -5,26 +5,27 @@ import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
-import { site } from '../data/site';
 
 interface Props {
     title?: string;
     description?: string;
 }
 
-const { title = `${site.nome} | ${site.slogan}`, description = site.descricao } = Astro.props;
+const config = Astro.locals.settings;
+const { title = config.seoTitulo, description = config.seoDescricao } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
 const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: site.nome,
+    name: 'Axia Soluções',
     url: Astro.site?.toString(),
     logo: new URL('/favicon.svg', Astro.site).toString(),
-    email: site.email,
+    email: config.email || undefined,
+    sameAs: [config.instagram, config.facebook, config.linkedin, config.youtube].filter(Boolean),
     contactPoint: {
         '@type': 'ContactPoint',
-        telephone: `+${site.whatsapp}`,
+        telephone: config.whatsapp ? `+${config.whatsapp}` : undefined,
         contactType: 'sales',
         areaServed: 'BR',
         availableLanguage: 'Portuguese'
@@ -46,7 +47,7 @@ const jsonLd = {
 
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="pt_BR" />
-        <meta property="og:site_name" content={site.nome} />
+        <meta property="og:site_name" content="Axia Soluções" />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:url" content={canonical} />

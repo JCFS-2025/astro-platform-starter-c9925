@@ -1,10 +1,15 @@
 ---
+export const prerender = false;
+
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
 import WhatsAppIcon from '../components/WhatsAppIcon.astro';
 import ClientCarousel from '../components/ClientCarousel.astro';
 import HeroCarousel from '../components/HeroCarousel.astro';
-import { linkWhatsApp } from '../data/site';
+import { linkWhatsApp as montarLink } from '../lib/settings';
+
+const config = Astro.locals.settings;
+const linkWhatsApp = (mensagem?: string) => montarLink(config, mensagem);
 
 const solucoes = [
     {
@@ -325,12 +330,14 @@ const faq = [
             </div>
 
             <!-- Carrossel de clientes -->
+            {config.clientes.length > 0 && (
             <div class="reveal mt-20">
-                <p class="text-center text-sm font-semibold tracking-wider text-slate-500 uppercase">Empresas que atendem melhor com o Axia Chat</p>
+                <p class="text-center text-sm font-semibold tracking-wider text-slate-500 uppercase">{config.clientesTitulo}</p>
                 <div class="mt-6">
                     <ClientCarousel />
                 </div>
             </div>
+            )}
         </div>
     </section>
 
@@ -531,7 +538,7 @@ const faq = [
                 </ul>
             </div>
 
-            <form class="reveal rounded-3xl bg-white p-6 text-slate-700 shadow-2xl sm:p-8" data-contato>
+            <form class="reveal rounded-3xl bg-white p-6 text-slate-700 shadow-2xl sm:p-8" data-contato data-whatsapp={config.whatsapp}>
                 <div class="grid gap-4 sm:grid-cols-2">
                     <label class="block sm:col-span-2">
                         <span class="text-sm font-medium text-navy-900">Nome</span>
@@ -581,8 +588,6 @@ const faq = [
 </Layout>
 
 <script>
-    import { linkWhatsApp } from '../data/site';
-
     const form = document.querySelector<HTMLFormElement>('[data-contato]')!;
     form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -594,6 +599,8 @@ const faq = [
             `*Interesse:* ${d.get('interesse')}`,
             d.get('mensagem') ? `*Mensagem:* ${d.get('mensagem')}` : ''
         ].filter(Boolean);
-        window.open(linkWhatsApp(linhas.join('\n')), '_blank', 'noopener');
+        const numero = form.dataset.whatsapp;
+        if (!numero) return;
+        window.open(`https://wa.me/${numero}?text=${encodeURIComponent(linhas.join('\n'))}`, '_blank', 'noopener');
     });
 </script>
