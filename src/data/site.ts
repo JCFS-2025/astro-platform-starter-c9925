@@ -4,7 +4,7 @@ export const site = {
     nome: 'Axia Soluções',
     slogan: 'Atendimento, segurança e identidade digital para a sua empresa',
     descricao:
-        'A Axia Soluções oferece plataforma de atendimento multicanal (Infochat), filtro DNS para segurança da internet (Lumiun DNS) e certificado digital ICP-Brasil (ID Federal) para empresas e profissionais.',
+        'Axia Soluções: Axia Chat para atendimento multicanal no WhatsApp, Axia DNS para proteger a internet da empresa e Axia ID, certificado digital ICP-Brasil emitido por videoconferência.',
     // Número do WhatsApp no formato internacional, somente dígitos (55 + DDD + número).
     // TODO: substituir pelo número real da Axia Soluções.
     whatsapp: '5500000000000',

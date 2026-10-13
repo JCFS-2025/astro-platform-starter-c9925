@@ -1,11 +1,11 @@
-// Clientes exibidos no carrossel da seção Infochat.
+// Clientes exibidos no carrossel da seção Axia Chat.
 //
 // Para usar logotipos reais: coloque o arquivo em /public/clientes/ (PNG ou SVG,
 // de preferência com fundo transparente) e informe o caminho em `logo`,
 // por exemplo: { nome: 'Empresa X', logo: '/clientes/empresa-x.png' }.
 // Sem `logo`, o nome é exibido em formato de selo.
 //
-// TODO: substituir pelos clientes reais que utilizam o Infochat.
+// TODO: substituir pelos clientes reais que utilizam o Axia Chat.
 
 export interface Cliente {
     nome: string;

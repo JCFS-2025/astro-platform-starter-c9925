@@ -1,6 +1,6 @@
 # Axia Soluções — site institucional
 
-Site da **Axia Soluções**, revenda de ferramentas de atendimento (Infochat), filtro DNS (Lumiun DNS) e certificado digital ICP-Brasil (ID Federal).
+Site da **Axia Soluções** e dos produtos **Axia Chat** (atendimento multicanal), **Axia DNS** (filtro DNS e segurança) e **Axia ID** (certificado digital ICP-Brasil).
 
 Feito com [Astro](https://astro.build) + Tailwind CSS, gerado como site **estático** e pronto para o **Cloudflare Pages**.
 
