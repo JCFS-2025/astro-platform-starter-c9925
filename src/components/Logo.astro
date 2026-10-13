@@ -1,25 +1,15 @@
 ---
+// Logo oficial da Axia Soluções. Os arquivos-fonte ficam em /public:
+// logo.svg (fundo claro), logo-branco.svg (fundo escuro) e logo-simbolo.svg (só o símbolo).
+import logoEscuro from '../../public/logo.svg?raw';
+import logoBranco from '../../public/logo-branco.svg?raw';
+
 interface Props {
     variant?: 'light' | 'dark';
+    class?: string;
 }
-const { variant = 'dark' } = Astro.props;
-const textColor = variant === 'light' ? 'text-white' : 'text-navy-900';
+const { variant = 'dark', class: className = 'h-10 w-auto' } = Astro.props;
+const svg = (variant === 'light' ? logoBranco : logoEscuro).replace('<svg ', `<svg class="${className}" `);
 ---
 
-<span class="inline-flex items-center gap-2.5">
-    <svg viewBox="0 0 40 40" class="size-9 shrink-0" aria-hidden="true">
-        <defs>
-            <linearGradient id={`axia-grad-${variant}`} x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#2f6bff"></stop>
-                <stop offset="1" stop-color="#22d3c5"></stop>
-            </linearGradient>
-        </defs>
-        <rect width="40" height="40" rx="10" fill={`url(#axia-grad-${variant})`}></rect>
-        <path d="M11 29 20 10l9 19" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"></path>
-        <path d="M14.5 22.5h11" stroke="#fff" stroke-width="3.4" stroke-linecap="round"></path>
-    </svg>
-    <span class={`leading-none ${textColor}`}>
-        <span class="block text-xl font-extrabold tracking-tight">Axia</span>
-        <span class="block text-[0.65rem] font-semibold tracking-[0.25em] uppercase opacity-70">Soluções</span>
-    </span>
-</span>
+<Fragment set:html={svg} />

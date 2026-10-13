@@ -1,0 +1,536 @@
+---
+// Tela inicial em carrossel: um slide para cada produto (Axia Chat, Axia DNS e Axia ID).
+import Icon from './Icon.astro';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { linkWhatsApp } from '../data/site';
+
+const slides = [
+    {
+        id: 'chat',
+        icon: 'chat',
+        produto: 'Axia Chat',
+        resumo: 'Atendimento multicanal',
+        eyebrow: 'Atendimento multicanal',
+        titulo: 'Todo o seu atendimento no WhatsApp,',
+        destaque: 'em uma só tela.',
+        texto: 'Vários atendentes no mesmo número, chatbot 24h, CRM e relatórios. Sua equipe organizada e nenhum cliente sem resposta.',
+        chips: ['Multiatendimento', 'Chatbot 24h', 'CRM integrado'],
+        cta: 'Agendar demonstração',
+        mensagem: 'Olá! Quero conhecer o Axia Chat e agendar uma demonstração.',
+        ancora: '#chat'
+    },
+    {
+        id: 'dns',
+        icon: 'shield',
+        produto: 'Axia DNS',
+        resumo: 'Segurança da internet',
+        eyebrow: 'Segurança da internet',
+        titulo: 'Internet da empresa protegida',
+        destaque: 'contra golpes e distrações.',
+        texto: 'Bloqueie phishing, malware e sites impróprios antes que carreguem. Regras por setor e por horário, sem instalar nenhum equipamento.',
+        chips: ['Anti-phishing', '+70 categorias', 'Relatórios'],
+        cta: 'Proteger minha rede',
+        mensagem: 'Olá! Quero proteger a internet da minha empresa com o Axia DNS.',
+        ancora: '#dns'
+    },
+    {
+        id: 'id',
+        icon: 'badge',
+        produto: 'Axia ID',
+        resumo: 'Certificado digital',
+        eyebrow: 'Certificado digital ICP-Brasil',
+        titulo: 'Seu certificado digital emitido',
+        destaque: 'sem sair de casa.',
+        texto: 'e-CPF e e-CNPJ, A1 ou A3, com validação por videoconferência. Basta um celular com câmera e um documento com foto.',
+        chips: ['e-CPF', 'e-CNPJ', 'Videoconferência'],
+        cta: 'Emitir meu certificado',
+        mensagem: 'Olá! Quero emitir meu certificado digital Axia ID.',
+        ancora: '#certificado'
+    }
+] as const;
+
+const dnsLog = [
+    { dominio: 'banco-seguro-login.xyz', status: 'Bloqueado', motivo: 'Phishing', ok: false },
+    { dominio: 'apostas-online.bet', status: 'Bloqueado', motivo: 'Apostas', ok: false },
+    { dominio: 'receita.fazenda.gov.br', status: 'Permitido', motivo: 'Governo', ok: true },
+    { dominio: 'videos-streaming.com', status: 'Bloqueado', motivo: 'Fora do horário', ok: false }
+];
+---
+
+<section class="hero relative overflow-hidden bg-navy-900 pt-24 pb-24 text-white sm:pt-28 lg:pt-36 lg:pb-10" data-hero data-slide="chat" aria-roledescription="carrossel" aria-label="Produtos Axia">
+    <h1 class="sr-only">Axia Soluções: Axia Chat, Axia DNS e Axia ID</h1>
+
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div class="hero-glow-a absolute -top-40 -right-32 size-[36rem] rounded-full blur-3xl transition-colors duration-1000"></div>
+        <div class="hero-glow-b absolute -bottom-48 -left-32 size-[32rem] rounded-full blur-3xl transition-colors duration-1000"></div>
+        <div
+            class="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:48px_48px]"
+        >
+        </div>
+    </div>
+
+    <div class="container-site relative flex flex-col">
+        <div class="grid" data-track>
+            {
+                slides.map((s, i) => (
+                    <article
+                        class="hero-slide grid items-center gap-14 [grid-area:1/1] lg:grid-cols-[1.1fr_1fr]"
+                        data-index={i}
+                        data-id={s.id}
+                        aria-roledescription="slide"
+                        aria-label={`${i + 1} de ${slides.length}: ${s.produto}`}
+                        aria-hidden={i === 0 ? undefined : 'true'}
+                        inert={i === 0 ? undefined : true}
+                    >
+                        <div class="slide-text">
+                            <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white/85">
+                                <Icon name={s.icon} class="slide-accent size-4" />
+                                <strong class="font-semibold text-white">{s.produto}</strong>
+                                <span class="text-white/40">·</span> {s.eyebrow}
+                            </span>
+                            <h2 class="mt-6 text-4xl leading-[1.08] font-extrabold text-white [text-wrap:balance] sm:text-5xl lg:text-[3.5rem]">
+                                {s.titulo} <span class="slide-gradient bg-clip-text text-transparent">{s.destaque}</span>
+                            </h2>
+                            <p class="mt-6 max-w-xl text-lg text-white/75">{s.texto}</p>
+                            <ul class="mt-6 flex flex-wrap gap-2">
+                                {s.chips.map((c) => (
+                                    <li class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-sm text-white/85">
+                                        <Icon name="check" class="slide-accent size-4" />
+                                        {c}
+                                    </li>
+                                ))}
+                            </ul>
+                            <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+                                <a href={linkWhatsApp(s.mensagem)} target="_blank" rel="noopener" class="btn-whatsapp">
+                                    <WhatsAppIcon class="size-5" /> {s.cta}
+                                </a>
+                                <a href={s.ancora} class="btn-outline">
+                                    Conhecer o {s.produto} <Icon name="arrow" class="size-4" />
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="slide-visual relative mx-auto mt-6 w-full max-w-md lg:mt-0" aria-hidden="true">
+                            {s.id === 'chat' && (
+                                <>
+                                    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur">
+                                        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                                            <div class="flex items-center gap-3">
+                                                <span class="inline-flex size-10 items-center justify-center rounded-full bg-whatsapp">
+                                                    <WhatsAppIcon class="size-6" />
+                                                </span>
+                                                <div>
+                                                    <p class="text-sm font-semibold">Axia Chat</p>
+                                                    <p class="text-xs text-white/60">3 atendentes online</p>
+                                                </div>
+                                            </div>
+                                            <span class="rounded-full bg-whatsapp/20 px-2.5 py-1 text-xs text-whatsapp">Ao vivo</span>
+                                        </div>
+                                        <div class="space-y-3 pt-4 text-sm">
+                                            <div class="max-w-[80%] rounded-2xl rounded-tl-sm bg-white/10 px-4 py-2.5">Oi! Vocês têm horário amanhã?</div>
+                                            <div class="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-brand-500 px-4 py-2.5">
+                                                Olá! 🤖 Sou o assistente virtual. Escolha uma opção: 1. Agendar 2. Falar com atendente
+                                            </div>
+                                            <div class="max-w-[80%] rounded-2xl rounded-tl-sm bg-white/10 px-4 py-2.5">1</div>
+                                            <div class="flex gap-2 pt-1">
+                                                <span class="rounded-full border border-white/15 px-3 py-1 text-xs text-white/70">#agendamento</span>
+                                                <span class="rounded-full border border-white/15 px-3 py-1 text-xs text-white/70">#novo-cliente</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="float-card absolute -top-12 right-2 sm:-right-4">
+                                        <span class="inline-flex size-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                                            <Icon name="users" />
+                                        </span>
+                                        <div>
+                                            <p class="text-xs text-slate-500">Distribuição automática</p>
+                                            <p class="text-sm font-semibold">Conversa enviada para Vendas</p>
+                                        </div>
+                                    </div>
+                                    <div class="float-card absolute -bottom-16 left-2 sm:-left-6">
+                                        <span class="inline-flex size-10 items-center justify-center rounded-xl bg-whatsapp/15 text-whatsapp-dark">
+                                            <Icon name="chart" />
+                                        </span>
+                                        <div>
+                                            <p class="text-xs text-slate-500">Hoje</p>
+                                            <p class="text-sm font-semibold">128 conversas atendidas</p>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {s.id === 'dns' && (
+                                <>
+                                    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur">
+                                        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                                            <div class="flex items-center gap-3">
+                                                <span class="inline-flex size-10 items-center justify-center rounded-xl bg-accent-400/20 text-accent-400">
+                                                    <Icon name="shield" />
+                                                </span>
+                                                <div>
+                                                    <p class="text-sm font-semibold">Axia DNS</p>
+                                                    <p class="text-xs text-white/60">Rede: Matriz · 42 dispositivos</p>
+                                                </div>
+                                            </div>
+                                            <span class="rounded-full bg-accent-400/20 px-2.5 py-1 text-xs text-accent-400">Protegido</span>
+                                        </div>
+                                        <ul class="divide-y divide-white/10 pt-2 text-sm">
+                                            {dnsLog.map((l) => (
+                                                <li class="flex items-center justify-between gap-3 py-2.5">
+                                                    <span class="min-w-0 truncate font-mono text-xs text-white/85">{l.dominio}</span>
+                                                    <span
+                                                        class={`shrink-0 rounded-full px-2.5 py-0.5 text-xs ${l.ok ? 'bg-accent-400/15 text-accent-400' : 'bg-rose-400/15 text-rose-300'}`}
+                                                    >
+                                                        {l.status} · {l.motivo}
+                                                    </span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <div class="mt-3 grid grid-cols-3 gap-2 text-center">
+                                            <div class="rounded-xl bg-white/5 py-2">
+                                                <p class="text-lg font-bold tabular-nums">1.284</p>
+                                                <p class="text-[0.65rem] text-white/60 uppercase">Bloqueios hoje</p>
+                                            </div>
+                                            <div class="rounded-xl bg-white/5 py-2">
+                                                <p class="text-lg font-bold tabular-nums">37</p>
+                                                <p class="text-[0.65rem] text-white/60 uppercase">Ameaças</p>
+                                            </div>
+                                            <div class="rounded-xl bg-white/5 py-2">
+                                                <p class="text-lg font-bold tabular-nums">6</p>
+                                                <p class="text-[0.65rem] text-white/60 uppercase">Setores</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="float-card absolute -top-12 right-2 sm:-right-4">
+                                        <span class="inline-flex size-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-500">
+                                            <Icon name="ban" />
+                                        </span>
+                                        <div>
+                                            <p class="text-xs text-slate-500">Ameaça bloqueada</p>
+                                            <p class="text-sm font-semibold">Site de phishing</p>
+                                        </div>
+                                    </div>
+                                    <div class="float-card absolute -bottom-16 left-2 sm:-left-6">
+                                        <span class="inline-flex size-10 items-center justify-center rounded-xl bg-accent-500/15 text-accent-500">
+                                            <Icon name="clock" />
+                                        </span>
+                                        <div>
+                                            <p class="text-xs text-slate-500">Regra por horário</p>
+                                            <p class="text-sm font-semibold">Redes sociais: 12h às 13h</p>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {s.id === 'id' && (
+                                <>
+                                    <div class="relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-indigo-500/40 via-white/5 to-brand-500/30 p-6 shadow-2xl backdrop-blur">
+                                        <div class="flex items-start justify-between">
+                                            <div>
+                                                <p class="text-xs tracking-[0.2em] text-white/60 uppercase">Certificado digital</p>
+                                                <p class="mt-1 text-2xl font-extrabold">e-CNPJ · A1</p>
+                                            </div>
+                                            <span class="inline-flex size-12 items-center justify-center rounded-2xl bg-white/15">
+                                                <Icon name="key" class="size-6" />
+                                            </span>
+                                        </div>
+                                        <dl class="mt-6 grid grid-cols-2 gap-x-4 gap-y-4 text-sm">
+                                            <div class="col-span-2">
+                                                <dt class="text-xs text-white/55">Titular</dt>
+                                                <dd class="font-semibold">SUA EMPRESA LTDA</dd>
+                                            </div>
+                                            <div>
+                                                <dt class="text-xs text-white/55">CNPJ</dt>
+                                                <dd class="font-mono text-[0.8rem] tabular-nums">00.000.000/0001-00</dd>
+                                            </div>
+                                            <div>
+                                                <dt class="text-xs text-white/55">Validade</dt>
+                                                <dd class="font-semibold">12 meses</dd>
+                                            </div>
+                                            <div>
+                                                <dt class="text-xs text-white/55">Padrão</dt>
+                                                <dd class="font-semibold">ICP-Brasil</dd>
+                                            </div>
+                                            <div>
+                                                <dt class="text-xs text-white/55">Situação</dt>
+                                                <dd class="inline-flex items-center gap-1 font-semibold text-accent-400">
+                                                    <Icon name="check" class="size-4" /> Válido
+                                                </dd>
+                                            </div>
+                                        </dl>
+                                        <div class="mt-6 flex items-center gap-3 rounded-2xl bg-white/10 p-3 text-sm">
+                                            <Icon name="file" class="size-5 text-white/80" />
+                                            Pronto para emitir NF-e e acessar o e-CAC
+                                        </div>
+                                    </div>
+                                    <div class="float-card absolute -top-12 right-2 sm:-right-4">
+                                        <span class="inline-flex size-10 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600">
+                                            <Icon name="video" />
+                                        </span>
+                                        <div>
+                                            <p class="text-xs text-slate-500">Videoconferência</p>
+                                            <p class="text-sm font-semibold">Validação agendada · 14h30</p>
+                                        </div>
+                                    </div>
+                                    <div class="float-card absolute -bottom-16 left-2 sm:-left-6">
+                                        <span class="inline-flex size-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                                            <Icon name="phone" />
+                                        </span>
+                                        <div>
+                                            <p class="text-xs text-slate-500">Você só precisa de</p>
+                                            <p class="text-sm font-semibold">Celular com câmera + documento</p>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </article>
+                ))
+            }
+        </div>
+
+        <!-- Navegação do carrossel -->
+        <div class="order-first mb-10 flex items-center gap-3 lg:order-none lg:mt-28 lg:mb-0">
+            <div class="grid grow grid-cols-3 gap-2 sm:gap-4" role="tablist" aria-label="Escolha um produto">
+                {
+                    slides.map((s, i) => (
+                        <button
+                            type="button"
+                            role="tab"
+                            class="hero-tab group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-3 text-left transition hover:bg-white/10 sm:p-4"
+                            aria-selected={i === 0 ? 'true' : 'false'}
+                            aria-label={`${s.produto}: ${s.resumo}`}
+                            data-tab={i}
+                        >
+                            <span class="flex items-center gap-3">
+                                <span class="tab-icon hidden size-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white/80 transition sm:inline-flex">
+                                    <Icon name={s.icon} class="size-5" />
+                                </span>
+                                <span class="min-w-0">
+                                    <span class="block text-sm font-semibold text-white sm:text-base">{s.produto}</span>
+                                    <span class="hidden truncate text-xs text-white/60 sm:block">{s.resumo}</span>
+                                </span>
+                            </span>
+                            <span class="absolute inset-x-0 bottom-0 h-0.5 bg-white/10">
+                                <span class="tab-progress block h-full w-0 origin-left" />
+                            </span>
+                        </button>
+                    ))
+                }
+            </div>
+            <button
+                type="button"
+                class="hidden size-11 shrink-0 items-center justify-center rounded-full border border-white/20 text-white/80 transition hover:bg-white/10 sm:inline-flex"
+                aria-label="Pausar carrossel"
+                data-pause
+            >
+                <svg viewBox="0 0 24 24" class="icon-pause size-5" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>
+                <svg viewBox="0 0 24 24" class="icon-play hidden size-5" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+            </button>
+        </div>
+    </div>
+</section>
+
+<style>
+    .hero {
+        --glow-a: rgb(47 107 255 / 0.32);
+        --glow-b: rgb(37 211 102 / 0.16);
+        --acc: #25d366;
+        --grad: linear-gradient(90deg, #d9e8ff, #25d366);
+    }
+    .hero[data-slide='dns'] {
+        --glow-a: rgb(16 185 171 / 0.3);
+        --glow-b: rgb(47 107 255 / 0.18);
+        --acc: #22d3c5;
+        --grad: linear-gradient(90deg, #d9e8ff, #22d3c5);
+    }
+    .hero[data-slide='id'] {
+        --glow-a: rgb(99 102 241 / 0.35);
+        --glow-b: rgb(34 211 197 / 0.14);
+        --acc: #a5b4fc;
+        --grad: linear-gradient(90deg, #e0e7ff, #818cf8, #22d3c5);
+    }
+    .hero-glow-a {
+        background: var(--glow-a);
+    }
+    .hero-glow-b {
+        background: var(--glow-b);
+    }
+    .slide-accent {
+        color: var(--acc);
+    }
+    .slide-gradient {
+        background-image: var(--grad);
+    }
+
+    .hero-slide {
+        transition:
+            opacity 0.7s ease,
+            visibility 0.7s;
+    }
+    .hero-slide[aria-hidden='true'] {
+        opacity: 0;
+        visibility: hidden;
+    }
+    .hero-slide .slide-text,
+    .hero-slide .slide-visual {
+        transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hero-slide[aria-hidden='true'] .slide-text {
+        transform: translateX(-24px);
+    }
+    .hero-slide[aria-hidden='true'] .slide-visual {
+        transform: translateX(32px) scale(0.97);
+    }
+
+    .float-card {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-radius: 1rem;
+        background: #fff;
+        padding: 0.75rem 1.25rem 0.75rem 0.75rem;
+        color: var(--color-navy-900);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.25);
+    }
+
+    .hero-tab[aria-selected='true'] {
+        background: rgb(255 255 255 / 0.12);
+        border-color: rgb(255 255 255 / 0.25);
+    }
+    .hero-tab[aria-selected='true'] .tab-icon {
+        background: var(--acc);
+        color: var(--color-navy-900);
+    }
+    .tab-progress {
+        background: var(--acc);
+    }
+    .hero-tab[aria-selected='true'] .tab-progress {
+        width: 100%;
+        animation: hero-progress var(--dur, 7000ms) linear;
+    }
+    .hero.is-paused .hero-tab[aria-selected='true'] .tab-progress {
+        animation-play-state: paused;
+    }
+    @keyframes hero-progress {
+        from {
+            width: 0;
+        }
+        to {
+            width: 100%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .hero-slide,
+        .hero-slide .slide-text,
+        .hero-slide .slide-visual {
+            transition: none;
+        }
+        .hero-tab[aria-selected='true'] .tab-progress {
+            animation: none;
+        }
+    }
+</style>
+
+<script>
+    const DURACAO = 7000;
+    const hero = document.querySelector<HTMLElement>('[data-hero]')!;
+    const slides = [...hero.querySelectorAll<HTMLElement>('.hero-slide')];
+    const tabs = [...hero.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const pauseBtn = hero.querySelector<HTMLButtonElement>('[data-pause]')!;
+    const reduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    hero.style.setProperty('--dur', `${DURACAO}ms`);
+
+    let atual = 0;
+    let timer: number | undefined;
+    let pausadoPeloUsuario = reduzirMovimento;
+    let pausadoTemporario = false;
+
+    function mostrar(i: number) {
+        atual = (i + slides.length) % slides.length;
+        slides.forEach((s, n) => {
+            const ativo = n === atual;
+            s.toggleAttribute('inert', !ativo);
+            if (ativo) s.removeAttribute('aria-hidden');
+            else s.setAttribute('aria-hidden', 'true');
+        });
+        tabs.forEach((t, n) => {
+            // Reinicia a animação da barra de progresso
+            t.setAttribute('aria-selected', 'false');
+            void t.offsetWidth;
+            t.setAttribute('aria-selected', String(n === atual));
+        });
+        hero.dataset.slide = slides[atual].dataset.id;
+        agendar();
+    }
+
+    function agendar() {
+        window.clearTimeout(timer);
+        const pausado = pausadoPeloUsuario || pausadoTemporario;
+        hero.classList.toggle('is-paused', pausado);
+        if (!pausado) timer = window.setTimeout(() => mostrar(atual + 1), DURACAO);
+    }
+
+    function atualizarBotaoPausa() {
+        pauseBtn.setAttribute('aria-label', pausadoPeloUsuario ? 'Retomar carrossel' : 'Pausar carrossel');
+        pauseBtn.querySelector('.icon-pause')!.classList.toggle('hidden', pausadoPeloUsuario);
+        pauseBtn.querySelector('.icon-play')!.classList.toggle('hidden', !pausadoPeloUsuario);
+    }
+
+    tabs.forEach((t, n) => t.addEventListener('click', () => mostrar(n)));
+
+    hero.querySelector('[role="tablist"]')!.addEventListener('keydown', (e) => {
+        const ev = e as KeyboardEvent;
+        if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
+        mostrar(atual + (ev.key === 'ArrowRight' ? 1 : -1));
+        tabs[atual].focus();
+    });
+
+    pauseBtn.addEventListener('click', () => {
+        pausadoPeloUsuario = !pausadoPeloUsuario;
+        atualizarBotaoPausa();
+        // Ao retomar, reinicia o slide atual para a barra de progresso acompanhar o tempo
+        if (!pausadoPeloUsuario) mostrar(atual);
+        else agendar();
+    });
+
+    // Pausa enquanto o mouse está sobre o conteúdo ou o foco está dentro dele
+    const track = hero.querySelector<HTMLElement>('[data-track]')!;
+    const temMouse = window.matchMedia('(hover: hover)').matches;
+    track.addEventListener('mouseenter', () => {
+        if (!temMouse) return;
+        pausadoTemporario = true;
+        agendar();
+    });
+    track.addEventListener('mouseleave', () => {
+        if (!temMouse) return;
+        pausadoTemporario = false;
+        mostrar(atual);
+    });
+
+    // Deslizar no celular
+    let inicioX: number | null = null;
+    track.addEventListener('touchstart', (e) => (inicioX = e.touches[0].clientX), { passive: true });
+    track.addEventListener(
+        'touchend',
+        (e) => {
+            if (inicioX === null) return;
+            const dx = e.changedTouches[0].clientX - inicioX;
+            if (Math.abs(dx) > 50) mostrar(atual + (dx < 0 ? 1 : -1));
+            inicioX = null;
+        },
+        { passive: true }
+    );
+
+    // Não avança com a aba do navegador em segundo plano
+    document.addEventListener('visibilitychange', () => {
+        pausadoTemporario = document.hidden;
+        if (document.hidden) agendar();
+        else mostrar(atual);
+    });
+
+    atualizarBotaoPausa();
+    mostrar(0);
+</script>

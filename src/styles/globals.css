@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
-    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
     --color-navy-950: #050d1f;
     --color-navy-900: #0a1a3a;
     --color-navy-800: #102654;

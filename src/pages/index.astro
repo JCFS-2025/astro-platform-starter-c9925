@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
 import WhatsAppIcon from '../components/WhatsAppIcon.astro';
 import ClientCarousel from '../components/ClientCarousel.astro';
+import HeroCarousel from '../components/HeroCarousel.astro';
 import { linkWhatsApp } from '../data/site';
 
 const solucoes = [
@@ -115,81 +116,7 @@ const faq = [
 ---
 
 <Layout>
-    <!-- HERO -->
-    <section class="relative overflow-hidden bg-navy-900 pt-32 pb-20 text-white sm:pt-40 sm:pb-28">
-        <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-            <div class="absolute -top-40 -right-32 size-[36rem] rounded-full bg-brand-500/30 blur-3xl"></div>
-            <div class="absolute -bottom-48 -left-32 size-[32rem] rounded-full bg-accent-500/20 blur-3xl"></div>
-            <div
-                class="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:48px_48px]"
-            >
-            </div>
-        </div>
-
-        <div class="container-site relative grid items-center gap-14 lg:grid-cols-[1.15fr_1fr]">
-            <div>
-                <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white/80">
-                    <span class="size-2 rounded-full bg-accent-400"></span> Atendimento · Segurança · Identidade digital
-                </span>
-                <h1 class="mt-6 text-4xl leading-tight font-extrabold text-white sm:text-5xl lg:text-6xl">
-                    Tecnologia que faz sua empresa
-                    <span class="bg-gradient-to-r from-brand-100 via-accent-400 to-accent-400 bg-clip-text text-transparent">atender melhor e trabalhar segura</span>.
-                </h1>
-                <p class="mt-6 max-w-xl text-lg text-white/75">
-                    Com o <strong class="text-white">Axia Chat</strong> sua equipe atende todos os canais em um só lugar. O
-                    <strong class="text-white">Axia DNS</strong> protege a internet da empresa. E o <strong class="text-white">Axia ID</strong> é o seu
-                    certificado digital ICP-Brasil, emitido por videoconferência.
-                </p>
-                <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-                    <a href={linkWhatsApp()} target="_blank" rel="noopener" class="btn-whatsapp">
-                        <WhatsAppIcon class="size-5" /> Falar com um consultor
-                    </a>
-                    <a href="#solucoes" class="btn-outline">Conhecer os produtos <Icon name="arrow" class="size-4" /></a>
-                </div>
-            </div>
-
-            <!-- Ilustração: painel de atendimento -->
-            <div class="relative mx-auto mt-10 w-full max-w-md lg:mt-0" aria-hidden="true">
-                <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
-                        <div class="flex items-center gap-3">
-                            <span class="inline-flex size-10 items-center justify-center rounded-full bg-whatsapp"><WhatsAppIcon class="size-6" /></span>
-                            <div>
-                                <p class="text-sm font-semibold">Atendimento</p>
-                                <p class="text-xs text-white/60">3 atendentes online</p>
-                            </div>
-                        </div>
-                        <span class="rounded-full bg-accent-400/20 px-2.5 py-1 text-xs text-accent-400">Ao vivo</span>
-                    </div>
-                    <div class="space-y-3 pt-4 text-sm">
-                        <div class="max-w-[80%] rounded-2xl rounded-tl-sm bg-white/10 px-4 py-2.5">Olá! Quero saber mais sobre o certificado digital.</div>
-                        <div class="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-brand-500 px-4 py-2.5">
-                            Claro! É para pessoa física (e-CPF) ou empresa (e-CNPJ)? 😊
-                        </div>
-                        <div class="max-w-[80%] rounded-2xl rounded-tl-sm bg-white/10 px-4 py-2.5">Para a minha empresa.</div>
-                        <div class="flex gap-2 pt-1">
-                            <span class="rounded-full border border-white/15 px-3 py-1 text-xs text-white/70">#vendas</span>
-                            <span class="rounded-full border border-white/15 px-3 py-1 text-xs text-white/70">#e-CNPJ</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="absolute -bottom-6 left-2 flex sm:-left-6 items-center gap-3 rounded-2xl bg-white p-3 pr-5 text-navy-900 shadow-xl">
-                    <span class="inline-flex size-10 items-center justify-center rounded-xl bg-accent-500/15 text-accent-500"><Icon name="shield" /></span>
-                    <div>
-                        <p class="text-xs text-slate-500">Axia DNS</p>
-                        <p class="text-sm font-semibold">Site de phishing bloqueado</p>
-                    </div>
-                </div>
-                <div class="absolute -top-14 right-2 flex sm:-right-4 items-center gap-3 rounded-2xl bg-white p-3 pr-5 text-navy-900 shadow-xl">
-                    <span class="inline-flex size-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600"><Icon name="badge" /></span>
-                    <div>
-                        <p class="text-xs text-slate-500">Axia ID</p>
-                        <p class="text-sm font-semibold">e-CNPJ emitido ✓</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <HeroCarousel />
 
     <!-- FAIXA DE BENEFÍCIOS -->
     <section class="border-b border-slate-200 bg-white">
