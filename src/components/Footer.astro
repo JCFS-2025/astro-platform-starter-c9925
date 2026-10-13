@@ -1,9 +1,52 @@
 ---
-
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { site, linkWhatsApp } from '../data/site';
+const ano = new Date().getFullYear();
 ---
 
-<footer class="pt-16 pb-12 sm:pt-24 sm:pb-16">
-    <p class="text-sm">
-        <a href="https://docs.netlify.com/frameworks/astro/" class="decoration-dashed text-primary underline-offset-8"> Astro on Netlify </a>
-    </p>
+<footer class="bg-navy-950 text-slate-400">
+    <div class="container-site grid gap-10 py-14 md:grid-cols-4">
+        <div class="md:col-span-2">
+            <Logo variant="light" />
+            <p class="mt-4 max-w-md text-sm leading-relaxed">
+                Soluções em atendimento digital, segurança de internet e certificação digital para empresas e profissionais. Tecnologia de
+                parceiros reconhecidos, com consultoria e suporte próximos da Axia.
+            </p>
+        </div>
+
+        <div>
+            <h2 class="text-sm font-semibold tracking-wider text-white uppercase">Soluções</h2>
+            <ul class="mt-4 space-y-2 text-sm">
+                <li><a href="/#infochat" class="hover:text-white">Infochat — Atendimento multicanal</a></li>
+                <li><a href="/#dns" class="hover:text-white">Lumiun DNS — Filtro e segurança</a></li>
+                <li><a href="/#certificado" class="hover:text-white">Certificado Digital ICP-Brasil</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h2 class="text-sm font-semibold tracking-wider text-white uppercase">Contato</h2>
+            <ul class="mt-4 space-y-3 text-sm">
+                <li>
+                    <a href={linkWhatsApp()} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-white">
+                        <Icon name="phone" class="size-4" />
+                        {site.telefoneExibicao}
+                    </a>
+                </li>
+                <li>
+                    <a href={`mailto:${site.email}`} class="inline-flex items-center gap-2 hover:text-white">
+                        <Icon name="mail" class="size-4" />
+                        {site.email}
+                    </a>
+                </li>
+                <li class="inline-flex items-center gap-2"><Icon name="pin" class="size-4" />{site.cidade}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="border-t border-white/10">
+        <div class="container-site flex flex-col gap-2 py-6 text-xs sm:flex-row sm:items-center sm:justify-between">
+            <p>© {ano} {site.nome}. Todos os direitos reservados.</p>
+            <p>Infochat, Lumiun DNS e ID Federal são marcas de seus respectivos titulares.</p>
+        </div>
+    </div>
 </footer>

@@ -1,34 +1,88 @@
 ---
-import '../../src/styles/globals.css';
+import '../styles/globals.css';
 import '@fontsource-variable/inter/wght.css';
 import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { site } from '../data/site';
 
 interface Props {
-    title: string;
+    title?: string;
+    description?: string;
 }
 
-const { title } = Astro.props;
+const { title = `${site.nome} | ${site.slogan}`, description = site.descricao } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: site.nome,
+    url: Astro.site?.toString(),
+    logo: new URL('/favicon.svg', Astro.site).toString(),
+    email: site.email,
+    contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: `+${site.whatsapp}`,
+        contactType: 'sales',
+        areaServed: 'BR',
+        availableLanguage: 'Portuguese'
+    }
+};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
     <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{title}</title>
-        <meta name="viewport" content="width=device-width" />
-        <meta name="generator" content={Astro.generator} />
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta name="theme-color" content="#0a1a3a" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="pt_BR" />
+        <meta property="og:site_name" content={site.nome} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={new URL('/og-image.png', Astro.site)} />
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     </head>
-    <body class="antialiased text-white bg-complementary">
-        <div class="flex flex-col min-h-screen px-6 bg-noise sm:px-12">
-            <div class="flex flex-col w-full max-w-5xl mx-auto grow">
-                <Header />
-                <main class="grow"><slot /></main>
-                <Footer />
-            </div>
-        </div>
+    <body class="antialiased">
+        <a href="#conteudo" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded focus:bg-white focus:px-4 focus:py-2"
+            >Pular para o conteúdo</a
+        >
+        <Header />
+        <main id="conteudo"><slot /></main>
+        <Footer />
+        <WhatsAppButton />
+
+        <script>
+            // Revela elementos com a classe .reveal ao entrarem na tela
+            const elementos = document.querySelectorAll('.reveal');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('is-visible');
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    },
+                    { threshold: 0.12 }
+                );
+                elementos.forEach((el) => observer.observe(el));
+            } else {
+                elementos.forEach((el) => el.classList.add('is-visible'));
+            }
+        </script>
     </body>
 </html>

@@ -1,78 +1,145 @@
 @import 'tailwindcss';
 
 @theme {
-    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-primary: #f67280;
-    --color-primary-content: #101828;
-    --color-complementary: #355c7d;
-    --background-image-noise: linear-gradient(
-            to bottom,
-            color-mix(in oklab, var(--color-gray-950) 0%, transparent),
-            color-mix(in oklab, var(--color-gray-950) 100%, transparent)
-        ),
-        url('/images/noise.png');
+    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    --color-navy-950: #050d1f;
+    --color-navy-900: #0a1a3a;
+    --color-navy-800: #102654;
+    --color-brand-50: #eef5ff;
+    --color-brand-100: #d9e8ff;
+    --color-brand-500: #2f6bff;
+    --color-brand-600: #1f55e6;
+    --color-brand-700: #1844b8;
+    --color-accent-400: #22d3c5;
+    --color-accent-500: #10b9ab;
+    --color-whatsapp: #25d366;
+    --color-whatsapp-dark: #1da851;
 }
 
 @layer base {
-    h1 {
-        @apply text-4xl font-bold tracking-tight sm:text-5xl;
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 5rem;
     }
 
-    h2 {
-        @apply text-2xl font-bold sm:text-3xl;
+    body {
+        @apply bg-white text-slate-700;
     }
 
-    a:not(.btn) {
-        @apply underline transition hover:opacity-80;
+    h1,
+    h2,
+    h3 {
+        @apply text-navy-900 tracking-tight;
     }
 
-    pre {
-        @apply p-6 overflow-x-auto rounded-lg;
-    }
-
-    :not(pre) > code {
-        @apply px-1 py-0.5 font-mono rounded bg-gray-900 text-primary;
-        font-size: 0.9em;
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-brand-500;
     }
 }
 
-@layer components {
-    .markdown {
-        > * {
-            @apply my-6;
-        }
+@utility container-site {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+}
 
-        :where(h1, h2) {
-            @apply mt-12 mb-6;
-        }
+@utility btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition sm:text-base;
+}
 
-        > :first-child {
-            @apply mt-0;
-        }
+@utility btn-primary {
+    @apply btn bg-brand-500 text-white shadow-lg shadow-brand-500/25 hover:bg-brand-600;
+}
 
-        > :last-child {
-            @apply mb-0;
-        }
+@utility btn-whatsapp {
+    @apply btn bg-whatsapp text-white shadow-lg shadow-whatsapp/25 hover:bg-whatsapp-dark;
+}
+
+@utility btn-outline {
+    @apply btn border border-white/30 text-white hover:bg-white/10;
+}
+
+@utility btn-outline-dark {
+    @apply btn border border-slate-300 text-navy-900 hover:border-brand-500 hover:text-brand-600;
+}
+
+@utility eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold tracking-wider text-brand-600 uppercase;
+}
+
+@utility section-title {
+    @apply mt-4 text-3xl font-bold sm:text-4xl;
+}
+
+@utility section-lead {
+    @apply mt-4 text-lg text-slate-600;
+}
+
+@utility card {
+    @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg;
+}
+
+/* Carrossel infinito de clientes */
+@keyframes marquee {
+    from {
+        transform: translateX(0);
     }
-
-    .btn {
-        @apply inline-flex items-center justify-center gap-2 bg-primary text-primary-content cursor-pointer text-center font-semibold no-underline transition-colors;
-        padding: var(--btn-py, 0.875rem) var(--btn-px, 1.25rem);
-        font-size: var(--btn-font-size, 0.875rem);
-        border-radius: var(--btn-border-radius, 0.25rem);
-
-        &:hover {
-            @apply bg-primary/85;
-        }
-
-        &:disabled {
-            @apply text-gray-400 bg-gray-700;
-        }
+    to {
+        transform: translateX(-50%);
     }
+}
 
-    .btn-lg {
-        --btn-font-size: 1.125rem;
-        --btn-px: 1.5rem;
-        --btn-py: 1.125rem;
+.marquee-track {
+    animation: marquee 40s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+    animation-play-state: paused;
+}
+
+/* Animação de entrada ao rolar */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+        opacity 0.6s ease,
+        transform 0.6s ease;
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
     }
+    .marquee-track {
+        animation: none;
+    }
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+/* Balão do WhatsApp */
+@keyframes wa-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgb(37 211 102 / 0.55);
+    }
+    70% {
+        box-shadow: 0 0 0 18px rgb(37 211 102 / 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgb(37 211 102 / 0);
+    }
+}
+
+.wa-pulse {
+    animation: wa-pulse 2.2s infinite;
+}
+
+details summary::-webkit-details-marker {
+    display: none;
 }

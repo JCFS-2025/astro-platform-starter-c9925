@@ -1,51 +1,47 @@
-# Astro on Netlify Platform Starter
+# Axia Soluções — site institucional
 
-[Live Demo](https://astro-platform-starter.netlify.app/)
+Site da **Axia Soluções**, revenda de ferramentas de atendimento (Infochat), filtro DNS (Lumiun DNS) e certificado digital ICP-Brasil (ID Federal).
 
-A modern starter based on Astro.js, Tailwind, and [Netlify Core Primitives](https://docs.netlify.com/core/overview/#develop) (Edge Functions, Image CDN, Blob Store).
+Feito com [Astro](https://astro.build) + Tailwind CSS, gerado como site **estático** e pronto para o **Cloudflare Pages**.
 
-## Astro Commands
+## Rodar localmente
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## Deploying to Netlify
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/astro-platform-starter)
-
-## Developing Locally
-
-| Prerequisites                                                                |
-| :--------------------------------------------------------------------------- |
-| [Node.js](https://nodejs.org/) v18.14+.                                      |
-| (optional) [nvm](https://github.com/nvm-sh/nvm) for Node version management. |
-
-1. Clone this repository, then run `npm install` in its root directory.
-
-2. For the starter to have full functionality locally (e.g. edge functions, blob store), please ensure you have an up-to-date version of Netlify CLI. Run:
-
-```
-npm install netlify-cli@latest -g
+```bash
+npm install
+npm run dev      # http://localhost:4321
+npm run build    # gera a pasta dist/
+npm run preview  # visualiza o build
 ```
 
-3. Link your local repository to the deployed Netlify site. This will ensure you're using the same runtime version for both local development and your deployed site.
+## Publicar no Cloudflare Pages
+
+1. No painel da Cloudflare: **Workers & Pages → Create → Pages → Connect to Git** e selecione este repositório.
+2. Configurações de build:
+   - **Framework preset:** Astro
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+   - Variável de ambiente (opcional): `NODE_VERSION` = `22`
+3. Clique em **Save and Deploy**. Depois, em **Custom domains**, adicione o domínio da empresa.
+
+Os arquivos `public/_headers` (cabeçalhos de segurança e cache) e `src/pages/404.astro` são reconhecidos automaticamente pelo Cloudflare Pages.
+
+## O que editar antes de publicar
+
+| O quê | Onde |
+| --- | --- |
+| Número do WhatsApp, e-mail, telefone, cidade | `src/data/site.ts` |
+| Clientes do carrossel (nomes e logotipos) | `src/data/clientes.ts` + imagens em `public/clientes/` |
+| Domínio do site | `astro.config.mjs` (`site`), `public/robots.txt` e `public/sitemap.xml` |
+| Textos das seções | `src/pages/index.astro` |
+
+## Estrutura
 
 ```
-netlify link
+src/
+  components/   Header, Footer, botão flutuante do WhatsApp, carrossel de clientes, ícones
+  data/         Dados de contato e lista de clientes
+  layouts/      Layout base com SEO (meta tags, Open Graph, schema.org)
+  pages/        Página inicial e 404
+  styles/       Estilos globais (Tailwind)
+public/         Favicon, imagem de compartilhamento, robots, sitemap, _headers
 ```
-
-4. Then, run the Astro.js development server via Netlify CLI:
-
-```
-netlify dev
-```
-
-If your browser doesn't navigate to the site automatically, visit [localhost:8888](http://localhost:8888).

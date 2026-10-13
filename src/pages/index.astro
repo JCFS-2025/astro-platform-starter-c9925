@@ -1,21 +1,571 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ContextAlert from '../components/ContextAlert.astro';
-import Markdown from '../components/Markdown.astro';
+import Icon from '../components/Icon.astro';
+import WhatsAppIcon from '../components/WhatsAppIcon.astro';
+import ClientCarousel from '../components/ClientCarousel.astro';
+import { linkWhatsApp } from '../data/site';
 
-const explainer = `
-An Astro website can go way beyond static pages - on the right platform.
+const solucoes = [
+    {
+        id: 'infochat',
+        icon: 'chat',
+        produto: 'Infochat',
+        titulo: 'Ferramenta de atendimento',
+        texto: 'Centralize WhatsApp e outros canais em uma única plataforma com CRM, automação e vários atendentes no mesmo número.',
+        cor: 'from-brand-500 to-brand-700'
+    },
+    {
+        id: 'dns',
+        icon: 'shield',
+        produto: 'Lumiun DNS',
+        titulo: 'Filtro DNS e segurança',
+        texto: 'Proteja a internet da empresa contra phishing, malware e sites impróprios, com regras por setor e relatórios de uso.',
+        cor: 'from-accent-500 to-teal-700'
+    },
+    {
+        id: 'certificado',
+        icon: 'badge',
+        produto: 'ID Federal',
+        titulo: 'Certificado digital',
+        texto: 'e-CPF e e-CNPJ padrão ICP-Brasil, com validação por videoconferência. Emita sem sair de casa ou do escritório.',
+        cor: 'from-indigo-500 to-navy-800'
+    }
+] as const;
 
-Netlify supports not only [Streaming SSR](https://docs.astro.build/en/guides/server-side-rendering/#html-streaming) and fast [Edge Middleware](https://docs.astro.build/en/guides/middleware/), but also [on-demand revalidation](https://www.netlify.com/blog/cache-tags-and-purge-api-on-netlify/) and [stale-while-revalidate](https://www.netlify.com/blog/swr-and-fine-grained-cache-control/). 
-Any page or data can be rebuilt only when needed, without site visitors ever getting a performance hit.
-`;
+const infochatRecursos = [
+    { icon: 'users', titulo: 'Multiatendimento', texto: 'Vários atendentes respondendo ao mesmo número, com filas e distribuição por setor.' },
+    { icon: 'bot', titulo: 'Chatbot e automação', texto: 'Menus automáticos, respostas rápidas e triagem 24h para não perder nenhum contato.' },
+    { icon: 'kanban', titulo: 'CRM integrado', texto: 'Acompanhe cada negociação em funil, com histórico completo do cliente.' },
+    { icon: 'layers', titulo: 'Múltiplos canais', texto: 'WhatsApp e demais canais de mensagens reunidos em uma só tela.' },
+    { icon: 'send', titulo: 'Campanhas', texto: 'Envie comunicados e ofertas para listas segmentadas de contatos.' },
+    { icon: 'tag', titulo: 'Etiquetas e organização', texto: 'Classifique conversas e contatos para encontrar tudo rapidamente.' },
+    { icon: 'chart', titulo: 'Relatórios', texto: 'Tempo de resposta, volume por atendente e desempenho da equipe.' },
+    { icon: 'cloud', titulo: '100% na nuvem', texto: 'Acesse pelo navegador, de qualquer lugar, sem instalar servidores.' }
+] as const;
+
+const dnsRecursos = [
+    { icon: 'bug', titulo: 'Proteção contra ameaças', texto: 'Bloqueio de sites de phishing, malware e golpes antes mesmo da conexão acontecer.' },
+    { icon: 'filter', titulo: 'Bloqueio por categoria', texto: 'Mais de 70 categorias prontas: adulto, apostas, redes sociais, streaming e outras.' },
+    { icon: 'building', titulo: 'Regras por setor', texto: 'Políticas diferentes por departamento, unidade ou dispositivo, com exceções.' },
+    { icon: 'clock', titulo: 'Horários programados', texto: 'Libere redes sociais no intervalo e bloqueie no expediente, por exemplo.' },
+    { icon: 'chart', titulo: 'Relatórios de navegação', texto: 'Visibilidade da atividade da rede para decisões baseadas em dados.' },
+    { icon: 'zap', titulo: 'Implantação simples', texto: 'Funciona apontando o DNS do roteador, firewall ou dispositivos. Sem hardware novo.' }
+] as const;
+
+const dnsPublico = ['Empresas e escritórios', 'Escolas', 'Clínicas', 'Redes de lojas', 'Provedores e TI', 'Home office'];
+
+const certificados = [
+    {
+        icon: 'file',
+        titulo: 'e-CPF',
+        texto: 'Identidade digital da pessoa física. Assine documentos, acesse o e-CAC, declare o Imposto de Renda e muito mais.'
+    },
+    {
+        icon: 'building',
+        titulo: 'e-CNPJ',
+        texto: 'Identidade digital da empresa. Emita notas fiscais, cumpra obrigações fiscais e acesse serviços da Receita Federal.'
+    }
+] as const;
+
+const tiposCertificado = [
+    { icon: 'cloud', titulo: 'A1', texto: 'Arquivo instalado no computador. Validade de 1 ano e uso prático no dia a dia, ideal para emissão de notas.' },
+    { icon: 'usb', titulo: 'A3', texto: 'Armazenado em token ou cartão. Mais portabilidade e validade estendida, conforme o modelo escolhido.' }
+] as const;
+
+const passosCertificado = [
+    { titulo: 'Escolha o certificado', texto: 'Ajudamos você a escolher o tipo ideal (e-CPF ou e-CNPJ, A1 ou A3).' },
+    { titulo: 'Agende a validação', texto: 'Um agente autorizado agenda a videoconferência no horário que for melhor para você.' },
+    { titulo: 'Valide pelo celular', texto: 'Basta um celular com câmera e o seu documento de identificação.' },
+    { titulo: 'Certificado emitido', texto: 'Após a validação, o certificado é liberado para uso.' }
+];
+
+const diferenciais = [
+    { icon: 'handshake', titulo: 'Consultoria de verdade', texto: 'Entendemos o seu cenário antes de indicar a solução — sem empurrar o que você não precisa.' },
+    { icon: 'headset', titulo: 'Suporte próximo', texto: 'Atendimento humano em português, por WhatsApp, do primeiro contato ao pós-venda.' },
+    { icon: 'target', titulo: 'Implantação acompanhada', texto: 'Ajudamos na configuração inicial e no treinamento da sua equipe.' },
+    { icon: 'lock', titulo: 'Parceiros reconhecidos', texto: 'Trabalhamos com plataformas consolidadas no mercado brasileiro.' }
+] as const;
+
+const faq = [
+    {
+        p: 'Posso usar o mesmo número de WhatsApp com vários atendentes?',
+        r: 'Sim. Com o Infochat, toda a equipe atende pelo mesmo número, com distribuição de conversas por setor, histórico centralizado e controle de quem está atendendo cada cliente.'
+    },
+    {
+        p: 'O Infochat funciona com o WhatsApp que já utilizo?',
+        r: 'Na conversa inicial avaliamos o seu cenário atual e indicamos a melhor forma de conexão para o seu número, explicando cada opção antes da contratação.'
+    },
+    {
+        p: 'O que é um filtro DNS e por que minha empresa precisa?',
+        r: 'Toda vez que alguém acessa um site, o computador consulta um servidor DNS. O Lumiun DNS verifica essa consulta e bloqueia endereços maliciosos ou não permitidos antes que a página carregue — protegendo a rede contra golpes, vírus e distrações.'
+    },
+    {
+        p: 'Preciso instalar algum equipamento para usar o Lumiun DNS?',
+        r: 'Não é necessário comprar hardware. A configuração é feita apontando o DNS do roteador, firewall, servidor ou dos próprios dispositivos para a Lumiun. Nós ajudamos nesse processo.'
+    },
+    {
+        p: 'Qual a diferença entre certificado A1 e A3?',
+        r: 'O A1 é um arquivo instalado no computador, com validade de 1 ano. O A3 fica armazenado em um token ou cartão, oferece mais portabilidade e pode ter validade maior. Indicamos o ideal conforme o seu uso.'
+    },
+    {
+        p: 'Como funciona a validação por videoconferência?',
+        r: 'Após a compra, um agente autorizado agenda uma chamada de vídeo. Você precisa apenas de um celular com câmera e do seu documento de identificação com foto. Tudo é feito sem sair de casa.'
+    }
+];
 ---
 
-<Layout title="Welcome to Astro.">
-    <ContextAlert class="mb-8" />
-    <h1 class="mb-10">Netlify Platform Starter for Astro</h1>
-    <Markdown content={explainer} class="mb-10 text-lg" />
-    <p>
-        <a href="https://docs.netlify.com/frameworks/astro/" class="btn btn-lg sm:min-w-64">Read the Docs</a>
-    </p>
+<Layout>
+    <!-- HERO -->
+    <section class="relative overflow-hidden bg-navy-900 pt-32 pb-20 text-white sm:pt-40 sm:pb-28">
+        <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+            <div class="absolute -top-40 -right-32 size-[36rem] rounded-full bg-brand-500/30 blur-3xl"></div>
+            <div class="absolute -bottom-48 -left-32 size-[32rem] rounded-full bg-accent-500/20 blur-3xl"></div>
+            <div
+                class="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:48px_48px]"
+            >
+            </div>
+        </div>
+
+        <div class="container-site relative grid items-center gap-14 lg:grid-cols-[1.15fr_1fr]">
+            <div>
+                <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white/80">
+                    <span class="size-2 rounded-full bg-accent-400"></span> Atendimento · Segurança · Identidade digital
+                </span>
+                <h1 class="mt-6 text-4xl leading-tight font-extrabold text-white sm:text-5xl lg:text-6xl">
+                    Tecnologia que faz sua empresa
+                    <span class="bg-gradient-to-r from-brand-100 via-accent-400 to-accent-400 bg-clip-text text-transparent">atender melhor e trabalhar segura</span>.
+                </h1>
+                <p class="mt-6 max-w-xl text-lg text-white/75">
+                    A Axia Soluções reúne em um só parceiro a plataforma de atendimento <strong class="text-white">Infochat</strong>, o filtro
+                    de internet <strong class="text-white">Lumiun DNS</strong> e o <strong class="text-white">certificado digital</strong> ICP-Brasil
+                    da ID Federal.
+                </p>
+                <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+                    <a href={linkWhatsApp()} target="_blank" rel="noopener" class="btn-whatsapp">
+                        <WhatsAppIcon class="size-5" /> Falar com um consultor
+                    </a>
+                    <a href="#solucoes" class="btn-outline">Conhecer as soluções <Icon name="arrow" class="size-4" /></a>
+                </div>
+            </div>
+
+            <!-- Ilustração: painel de atendimento -->
+            <div class="relative mx-auto mt-10 w-full max-w-md lg:mt-0" aria-hidden="true">
+                <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="inline-flex size-10 items-center justify-center rounded-full bg-whatsapp"><WhatsAppIcon class="size-6" /></span>
+                            <div>
+                                <p class="text-sm font-semibold">Atendimento</p>
+                                <p class="text-xs text-white/60">3 atendentes online</p>
+                            </div>
+                        </div>
+                        <span class="rounded-full bg-accent-400/20 px-2.5 py-1 text-xs text-accent-400">Ao vivo</span>
+                    </div>
+                    <div class="space-y-3 pt-4 text-sm">
+                        <div class="max-w-[80%] rounded-2xl rounded-tl-sm bg-white/10 px-4 py-2.5">Olá! Quero saber mais sobre o certificado digital.</div>
+                        <div class="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-brand-500 px-4 py-2.5">
+                            Claro! É para pessoa física (e-CPF) ou empresa (e-CNPJ)? 😊
+                        </div>
+                        <div class="max-w-[80%] rounded-2xl rounded-tl-sm bg-white/10 px-4 py-2.5">Para a minha empresa.</div>
+                        <div class="flex gap-2 pt-1">
+                            <span class="rounded-full border border-white/15 px-3 py-1 text-xs text-white/70">#vendas</span>
+                            <span class="rounded-full border border-white/15 px-3 py-1 text-xs text-white/70">#e-CNPJ</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute -bottom-6 left-2 flex sm:-left-6 items-center gap-3 rounded-2xl bg-white p-3 pr-5 text-navy-900 shadow-xl">
+                    <span class="inline-flex size-10 items-center justify-center rounded-xl bg-accent-500/15 text-accent-500"><Icon name="shield" /></span>
+                    <div>
+                        <p class="text-xs text-slate-500">Lumiun DNS</p>
+                        <p class="text-sm font-semibold">Site de phishing bloqueado</p>
+                    </div>
+                </div>
+                <div class="absolute -top-14 right-2 flex sm:-right-4 items-center gap-3 rounded-2xl bg-white p-3 pr-5 text-navy-900 shadow-xl">
+                    <span class="inline-flex size-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600"><Icon name="badge" /></span>
+                    <div>
+                        <p class="text-xs text-slate-500">Certificado digital</p>
+                        <p class="text-sm font-semibold">e-CNPJ emitido ✓</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAIXA DE BENEFÍCIOS -->
+    <section class="border-b border-slate-200 bg-white">
+        <div class="container-site grid grid-cols-2 gap-6 py-8 text-sm lg:grid-cols-4">
+            {
+                [
+                    { icon: 'headset', t: 'Consultoria gratuita' },
+                    { icon: 'video', t: 'Emissão por videoconferência' },
+                    { icon: 'cloud', t: 'Soluções 100% na nuvem' },
+                    { icon: 'handshake', t: 'Suporte via WhatsApp' }
+                ].map((b) => (
+                    <div class="flex items-center gap-3 font-medium text-navy-900">
+                        <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                            <Icon name={b.icon as any} class="size-5" />
+                        </span>
+                        {b.t}
+                    </div>
+                ))
+            }
+        </div>
+    </section>
+
+    <!-- SOLUÇÕES -->
+    <section id="solucoes" class="bg-slate-50 py-20 sm:py-28">
+        <div class="container-site">
+            <div class="reveal mx-auto max-w-2xl text-center">
+                <span class="eyebrow">Nossas soluções</span>
+                <h2 class="section-title">Tudo o que sua empresa precisa em um só parceiro</h2>
+                <p class="section-lead">Três soluções complementares para vender mais, proteger sua rede e cumprir as obrigações digitais do dia a dia.</p>
+            </div>
+
+            <div class="mt-14 grid gap-6 md:grid-cols-3">
+                {
+                    solucoes.map((s) => (
+                        <a href={`#${s.id}`} class="card reveal group flex flex-col">
+                            <span class={`inline-flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${s.cor} text-white shadow-lg`}>
+                                <Icon name={s.icon} class="size-7" />
+                            </span>
+                            <p class="mt-6 text-sm font-semibold text-brand-600">{s.produto}</p>
+                            <h3 class="mt-1 text-xl font-bold">{s.titulo}</h3>
+                            <p class="mt-3 grow text-slate-600">{s.texto}</p>
+                            <span class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-navy-900 group-hover:text-brand-600">
+                                Saiba mais <Icon name="arrow" class="size-4 transition group-hover:translate-x-1" />
+                            </span>
+                        </a>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- INFOCHAT -->
+    <section id="infochat" class="py-20 sm:py-28">
+        <div class="container-site">
+            <div class="grid items-center gap-12 lg:grid-cols-2">
+                <div class="reveal">
+                    <span class="eyebrow"><Icon name="chat" class="size-4" /> Infochat · Atendimento</span>
+                    <h2 class="section-title">Centralize seus atendimentos e venda mais pelo WhatsApp</h2>
+                    <p class="section-lead">
+                        O Infochat é uma plataforma completa de CRM e automação para WhatsApp e múltiplos canais. Sua equipe inteira atende em um só
+                        lugar, com organização, agilidade e controle total das conversas.
+                    </p>
+                    <ul class="mt-6 space-y-3">
+                        {
+                            [
+                                'Fim dos celulares espalhados e conversas perdidas',
+                                'Atendimento 24h com chatbot e respostas automáticas',
+                                'Gestão da equipe com indicadores de desempenho',
+                                'Histórico completo de cada cliente, sempre acessível'
+                            ].map((t) => (
+                                <li class="flex gap-3">
+                                    <span class="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-whatsapp/15 text-whatsapp-dark">
+                                        <Icon name="check" class="size-4" />
+                                    </span>
+                                    <span>{t}</span>
+                                </li>
+                            ))
+                        }
+                    </ul>
+                    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                        <a
+                            href={linkWhatsApp('Olá! Quero conhecer o Infochat e agendar uma demonstração.')}
+                            target="_blank"
+                            rel="noopener"
+                            class="btn-whatsapp"
+                        >
+                            <WhatsAppIcon class="size-5" /> Agendar demonstração
+                        </a>
+                    </div>
+                </div>
+
+                <div class="reveal grid gap-4 sm:grid-cols-2">
+                    {
+                        infochatRecursos.map((r) => (
+                            <div class="rounded-2xl border border-slate-200 p-5 transition hover:border-brand-500/40 hover:shadow-md">
+                                <span class="inline-flex size-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                                    <Icon name={r.icon} class="size-5" />
+                                </span>
+                                <h3 class="mt-4 font-semibold">{r.titulo}</h3>
+                                <p class="mt-1 text-sm text-slate-600">{r.texto}</p>
+                            </div>
+                        ))
+                    }
+                </div>
+            </div>
+
+            <!-- Carrossel de clientes -->
+            <div class="reveal mt-20">
+                <p class="text-center text-sm font-semibold tracking-wider text-slate-500 uppercase">Empresas que atendem melhor com o Infochat</p>
+                <div class="mt-6">
+                    <ClientCarousel />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LUMIUN DNS -->
+    <section id="dns" class="relative overflow-hidden bg-navy-900 py-20 text-white sm:py-28">
+        <div class="pointer-events-none absolute -top-40 left-1/2 size-[40rem] -translate-x-1/2 rounded-full bg-accent-500/15 blur-3xl" aria-hidden="true">
+        </div>
+        <div class="container-site relative">
+            <div class="reveal mx-auto max-w-3xl text-center">
+                <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider text-accent-400 uppercase">
+                    <Icon name="shield" class="size-4" /> Lumiun DNS · Segurança
+                </span>
+                <h2 class="mt-4 text-3xl font-bold text-white sm:text-4xl">Internet da empresa protegida, produtiva e sob controle</h2>
+                <p class="mt-4 text-lg text-white/70">
+                    O Lumiun DNS filtra a navegação na camada DNS: cada acesso é verificado e endereços maliciosos ou não permitidos são bloqueados
+                    antes de carregar. A classificação de conteúdo é automática, com base em múltiplas fontes e inteligência artificial.
+                </p>
+            </div>
+
+            <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {
+                    dnsRecursos.map((r) => (
+                        <div class="reveal rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:bg-white/10">
+                            <span class="inline-flex size-11 items-center justify-center rounded-xl bg-accent-400/15 text-accent-400">
+                                <Icon name={r.icon} class="size-5" />
+                            </span>
+                            <h3 class="mt-4 text-lg font-semibold text-white">{r.titulo}</h3>
+                            <p class="mt-2 text-sm text-white/65">{r.texto}</p>
+                        </div>
+                    ))
+                }
+            </div>
+
+            <div class="reveal mt-14 grid items-center gap-8 rounded-3xl border border-white/10 bg-white/5 p-8 lg:grid-cols-[1fr_auto]">
+                <div>
+                    <h3 class="text-xl font-semibold text-white">Ideal para</h3>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        {dnsPublico.map((p) => <span class="rounded-full border border-white/15 px-4 py-1.5 text-sm text-white/80">{p}</span>)}
+                    </div>
+                </div>
+                <a
+                    href={linkWhatsApp('Olá! Quero proteger a internet da minha empresa com o Lumiun DNS.')}
+                    target="_blank"
+                    rel="noopener"
+                    class="btn-whatsapp"
+                >
+                    <WhatsAppIcon class="size-5" /> Quero proteger minha rede
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CERTIFICADO DIGITAL -->
+    <section id="certificado" class="py-20 sm:py-28">
+        <div class="container-site">
+            <div class="reveal mx-auto max-w-3xl text-center">
+                <span class="eyebrow"><Icon name="badge" class="size-4" /> ID Federal · Certificado Digital</span>
+                <h2 class="section-title">Certificado digital ICP-Brasil, emitido por videoconferência</h2>
+                <p class="section-lead">
+                    Sua identidade no mundo digital, com a mesma validade jurídica de uma assinatura de próprio punho. Escolha o certificado, valide
+                    com um agente autorizado pela ICP-Brasil e comece a usar — sem filas e sem deslocamento.
+                </p>
+            </div>
+
+            <div class="mt-14 grid gap-6 lg:grid-cols-2">
+                {
+                    certificados.map((c) => (
+                        <div class="card reveal">
+                            <div class="flex items-center gap-4">
+                                <span class="inline-flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-navy-800 text-white">
+                                    <Icon name={c.icon} class="size-7" />
+                                </span>
+                                <h3 class="text-2xl font-bold">{c.titulo}</h3>
+                            </div>
+                            <p class="mt-4 text-slate-600">{c.texto}</p>
+                            <div class="mt-5 flex flex-wrap gap-2">
+                                <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">Disponível em A1</span>
+                                <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">Disponível em A3</span>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+
+            <div class="mt-6 grid gap-6 md:grid-cols-2">
+                {
+                    tiposCertificado.map((t) => (
+                        <div class="reveal flex gap-4 rounded-2xl bg-slate-50 p-6">
+                            <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-white text-brand-600 shadow-sm">
+                                <Icon name={t.icon} class="size-5" />
+                            </span>
+                            <div>
+                                <h3 class="font-semibold">Certificado {t.titulo}</h3>
+                                <p class="mt-1 text-sm text-slate-600">{t.texto}</p>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+
+            <!-- Passo a passo -->
+            <div class="reveal mt-16 rounded-3xl bg-gradient-to-br from-brand-500 to-brand-700 p-8 text-white sm:p-12">
+                <h3 class="text-2xl font-bold text-white">Como emitir o seu certificado</h3>
+                <ol class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    {
+                        passosCertificado.map((p, i) => (
+                            <li>
+                                <span class="inline-flex size-10 items-center justify-center rounded-full bg-white text-lg font-bold text-brand-600">
+                                    {i + 1}
+                                </span>
+                                <h4 class="mt-4 font-semibold">{p.titulo}</h4>
+                                <p class="mt-1 text-sm text-white/80">{p.texto}</p>
+                            </li>
+                        ))
+                    }
+                </ol>
+                <a
+                    href={linkWhatsApp('Olá! Quero emitir meu certificado digital.')}
+                    target="_blank"
+                    rel="noopener"
+                    class="btn mt-10 bg-white text-brand-700 hover:bg-brand-50"
+                >
+                    <WhatsAppIcon class="size-5" /> Emitir meu certificado
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOBRE / DIFERENCIAIS -->
+    <section id="sobre" class="bg-slate-50 py-20 sm:py-28">
+        <div class="container-site grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-center">
+            <div class="reveal">
+                <span class="eyebrow">Sobre a Axia</span>
+                <h2 class="section-title">Seu parceiro em tecnologia para o dia a dia da empresa</h2>
+                <p class="section-lead">
+                    A Axia Soluções nasceu para simplificar a tecnologia para empresas e profissionais. Selecionamos plataformas reconhecidas no mercado
+                    e cuidamos de tudo: da indicação da solução certa à implantação e ao suporte.
+                </p>
+                <p class="mt-4 text-slate-600">
+                    Atendimento ao cliente, segurança da navegação e identidade digital são pilares de qualquer negócio moderno. Com a Axia, você
+                    resolve os três com um único contato.
+                </p>
+            </div>
+            <div class="grid gap-5 sm:grid-cols-2">
+                {
+                    diferenciais.map((d) => (
+                        <div class="card reveal">
+                            <span class="inline-flex size-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                                <Icon name={d.icon} class="size-5" />
+                            </span>
+                            <h3 class="mt-4 text-lg font-semibold">{d.titulo}</h3>
+                            <p class="mt-2 text-sm text-slate-600">{d.texto}</p>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-20 sm:py-28">
+        <div class="container-site max-w-3xl">
+            <div class="reveal text-center">
+                <span class="eyebrow">Dúvidas frequentes</span>
+                <h2 class="section-title">Perguntas e respostas</h2>
+            </div>
+            <div class="mt-12 space-y-3">
+                {
+                    faq.map((f) => (
+                        <details class="group reveal rounded-2xl border border-slate-200 bg-white px-6 open:shadow-md">
+                            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-semibold text-navy-900">
+                                {f.p}
+                                <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600 transition group-open:rotate-45">
+                                    <Icon name="plus" class="size-4" />
+                                </span>
+                            </summary>
+                            <p class="pb-5 text-slate-600">{f.r}</p>
+                        </details>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section id="contato" class="bg-navy-900 py-20 text-white sm:py-28">
+        <div class="container-site grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div class="reveal">
+                <h2 class="text-3xl font-bold text-white sm:text-4xl">Vamos conversar sobre a sua empresa?</h2>
+                <p class="mt-4 text-lg text-white/70">
+                    Preencha os dados ao lado e continue a conversa direto no nosso WhatsApp. Um consultor da Axia vai entender sua necessidade e
+                    indicar a melhor solução.
+                </p>
+                <ul class="mt-8 space-y-3 text-white/80">
+                    <li class="flex items-center gap-3"><Icon name="check" class="size-5 text-accent-400" /> Resposta rápida em horário comercial</li>
+                    <li class="flex items-center gap-3"><Icon name="check" class="size-5 text-accent-400" /> Sem compromisso</li>
+                    <li class="flex items-center gap-3"><Icon name="check" class="size-5 text-accent-400" /> Proposta sob medida</li>
+                </ul>
+            </div>
+
+            <form class="reveal rounded-3xl bg-white p-6 text-slate-700 shadow-2xl sm:p-8" data-contato>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <label class="block sm:col-span-2">
+                        <span class="text-sm font-medium text-navy-900">Nome</span>
+                        <input
+                            name="nome"
+                            required
+                            autocomplete="name"
+                            class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                        />
+                    </label>
+                    <label class="block">
+                        <span class="text-sm font-medium text-navy-900">Empresa</span>
+                        <input
+                            name="empresa"
+                            autocomplete="organization"
+                            class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                        />
+                    </label>
+                    <label class="block">
+                        <span class="text-sm font-medium text-navy-900">Interesse</span>
+                        <select
+                            name="interesse"
+                            class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                        >
+                            <option>Infochat (atendimento)</option>
+                            <option>Lumiun DNS (segurança)</option>
+                            <option>Certificado digital</option>
+                            <option>Mais de uma solução</option>
+                        </select>
+                    </label>
+                    <label class="block sm:col-span-2">
+                        <span class="text-sm font-medium text-navy-900">Mensagem</span>
+                        <textarea
+                            name="mensagem"
+                            rows="3"
+                            class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                            placeholder="Conte um pouco sobre o que você precisa"></textarea>
+                    </label>
+                </div>
+                <button type="submit" class="btn-whatsapp mt-6 w-full">
+                    <WhatsAppIcon class="size-5" /> Enviar pelo WhatsApp
+                </button>
+                <p class="mt-3 text-center text-xs text-slate-500">Seus dados são usados apenas para retornarmos o contato.</p>
+            </form>
+        </div>
+    </section>
 </Layout>
+
+<script>
+    import { linkWhatsApp } from '../data/site';
+
+    const form = document.querySelector<HTMLFormElement>('[data-contato]')!;
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const d = new FormData(form);
+        const linhas = [
+            'Olá! Vim pelo site da Axia Soluções.',
+            `*Nome:* ${d.get('nome')}`,
+            d.get('empresa') ? `*Empresa:* ${d.get('empresa')}` : '',
+            `*Interesse:* ${d.get('interesse')}`,
+            d.get('mensagem') ? `*Mensagem:* ${d.get('mensagem')}` : ''
+        ].filter(Boolean);
+        window.open(linkWhatsApp(linhas.join('\n')), '_blank', 'noopener');
+    });
+</script>

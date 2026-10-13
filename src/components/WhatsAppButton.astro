@@ -1,0 +1,56 @@
+---
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import Icon from './Icon.astro';
+import { linkWhatsApp } from '../data/site';
+---
+
+<div class="fixed right-4 bottom-4 z-50 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
+    <div
+        class="relative hidden max-w-[16rem] rounded-2xl rounded-br-sm bg-white p-4 pr-9 text-sm text-slate-700 shadow-2xl ring-1 ring-slate-200"
+        role="status"
+        data-wa-bubble
+    >
+        <button
+            type="button"
+            class="absolute top-2 right-2 inline-flex size-6 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+            aria-label="Fechar mensagem"
+            data-wa-close
+        >
+            <Icon name="close" class="size-4" />
+        </button>
+        <p class="font-semibold text-navy-900">Olá! 👋</p>
+        <p class="mt-1">Precisa de atendimento, DNS ou certificado digital? Fale com a Axia pelo WhatsApp.</p>
+    </div>
+
+    <a
+        href={linkWhatsApp()}
+        target="_blank"
+        rel="noopener"
+        class="wa-pulse inline-flex size-16 items-center justify-center rounded-full bg-whatsapp text-white shadow-xl transition hover:scale-105 hover:bg-whatsapp-dark"
+        aria-label="Chamar a Axia Soluções no WhatsApp"
+    >
+        <WhatsAppIcon class="size-9" />
+    </a>
+</div>
+
+<script>
+    const bubble = document.querySelector<HTMLElement>('[data-wa-bubble]')!;
+    const fechar = document.querySelector<HTMLButtonElement>('[data-wa-close]')!;
+    const CHAVE = 'axia-wa-bubble-fechado';
+
+    let fechado = false;
+    try {
+        fechado = sessionStorage.getItem(CHAVE) === '1';
+    } catch {}
+
+    if (!fechado) {
+        setTimeout(() => bubble.classList.remove('hidden'), 4000);
+    }
+
+    fechar.addEventListener('click', () => {
+        bubble.classList.add('hidden');
+        try {
+            sessionStorage.setItem(CHAVE, '1');
+        } catch {}
+    });
+</script>

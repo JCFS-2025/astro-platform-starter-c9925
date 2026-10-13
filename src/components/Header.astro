@@ -1,30 +1,119 @@
 ---
-import Logo from '../components/Logo.astro';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { linkWhatsApp } from '../data/site';
 
-const navItems = [
-    { linkText: 'Home', href: '/' },
-    { linkText: 'Revalidation', href: '/revalidation' },
-    { linkText: 'Image CDN', href: '/image-cdn' },
-    { linkText: 'Edge Function', href: '/edge' },
-    { linkText: 'Blobs', href: '/blobs' }
+const links = [
+    { href: '/#solucoes', label: 'Soluções' },
+    { href: '/#infochat', label: 'Atendimento' },
+    { href: '/#dns', label: 'DNS' },
+    { href: '/#certificado', label: 'Certificado Digital' },
+    { href: '/#sobre', label: 'Sobre' },
+    { href: '/#faq', label: 'Dúvidas' }
 ];
 ---
 
-<nav class="flex flex-wrap items-center gap-4 pt-6 pb-16 sm:pt-12 sm:pb-24">
-    <a href="/">
-        <Logo />
-    </a>
-    {
-        !!navItems?.length && (
-            <ul class="flex flex-wrap gap-x-4 gap-y-1">
-                {navItems.map((item) => (
-                    <li>
-                        <a href={item.href} class="inline-block px-1.5 py-1 sm:px-3 sm:py-2">
-                            {item.linkText}
-                        </a>
-                    </li>
-                ))}
-            </ul>
-        )
+<header id="topo" class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-colors duration-300" data-header>
+    <div class="container-site flex h-18 items-center justify-between">
+        <a href="/" aria-label="Axia Soluções — página inicial" data-logo>
+            <span class="logo-light"><Logo variant="light" /></span>
+            <span class="logo-dark hidden"><Logo variant="dark" /></span>
+        </a>
+
+        <nav class="hidden items-center gap-7 lg:flex" aria-label="Principal">
+            {
+                links.map((l) => (
+                    <a href={l.href} class="nav-link text-sm font-medium text-white/85 transition hover:text-white">
+                        {l.label}
+                    </a>
+                ))
+            }
+        </nav>
+
+        <div class="flex items-center gap-2">
+            <a href={linkWhatsApp()} target="_blank" rel="noopener" class="btn-whatsapp hidden !py-2.5 sm:inline-flex">
+                <WhatsAppIcon class="size-5" /> Fale conosco
+            </a>
+            <button
+                type="button"
+                class="menu-btn inline-flex size-11 items-center justify-center rounded-full text-white lg:hidden"
+                aria-label="Abrir menu"
+                aria-expanded="false"
+                aria-controls="menu-mobile"
+                data-menu-btn
+            >
+                <Icon name="menu" class="size-6" />
+            </button>
+        </div>
+    </div>
+
+    <nav id="menu-mobile" class="hidden border-t border-slate-200 bg-white shadow-lg lg:hidden" aria-label="Menu móvel" data-menu>
+        <div class="container-site flex flex-col py-3">
+            {
+                links.map((l) => (
+                    <a href={l.href} class="rounded-lg px-3 py-3 font-medium text-navy-900 hover:bg-brand-50" data-menu-link>
+                        {l.label}
+                    </a>
+                ))
+            }
+            <a href={linkWhatsApp()} target="_blank" rel="noopener" class="btn-whatsapp mt-2 mb-2">
+                <WhatsAppIcon class="size-5" /> Chamar no WhatsApp
+            </a>
+        </div>
+    </nav>
+</header>
+
+<style>
+    [data-header].is-solid {
+        background: rgb(255 255 255 / 0.95);
+        backdrop-filter: blur(10px);
+        border-color: rgb(226 232 240);
     }
-</nav>
+    [data-header].is-solid .logo-light {
+        display: none;
+    }
+    [data-header].is-solid .logo-dark {
+        display: inline;
+    }
+    [data-header].is-solid .nav-link {
+        color: var(--color-slate-600);
+    }
+    [data-header].is-solid .nav-link:hover {
+        color: var(--color-brand-600);
+    }
+    [data-header].is-solid .menu-btn {
+        color: var(--color-navy-900);
+    }
+</style>
+
+<script>
+    const header = document.querySelector<HTMLElement>('[data-header]')!;
+    const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]')!;
+    const menu = document.querySelector<HTMLElement>('[data-menu]')!;
+    // Páginas sem hero escuro (ex.: 404) usam o cabeçalho sólido desde o início
+    const sempreSolido = document.body.hasAttribute('data-solid-header');
+
+    const atualizar = () => {
+        const aberto = !menu.classList.contains('hidden');
+        header.classList.toggle('is-solid', sempreSolido || aberto || window.scrollY > 24);
+    };
+
+    btn.addEventListener('click', () => {
+        const aberto = menu.classList.toggle('hidden') === false;
+        btn.setAttribute('aria-expanded', String(aberto));
+        btn.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
+        atualizar();
+    });
+
+    menu.querySelectorAll('[data-menu-link]').forEach((link) =>
+        link.addEventListener('click', () => {
+            menu.classList.add('hidden');
+            btn.setAttribute('aria-expanded', 'false');
+            atualizar();
+        })
+    );
+
+    window.addEventListener('scroll', atualizar, { passive: true });
+    atualizar();
+</script>
